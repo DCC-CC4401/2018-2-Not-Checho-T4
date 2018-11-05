@@ -1,0 +1,5 @@
+.idea/
+coevaluaciones/__pycache__/
+Tarea4/__pycache__/
+Tarea4/migrations/
+db.sqlite3
