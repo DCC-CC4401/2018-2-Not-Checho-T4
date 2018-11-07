@@ -17,3 +17,16 @@ class Roles(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rol = models.CharField(max_length=50)
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+
+
+class Equipo(models.Model):
+    nombre = models.CharField(max_length=250)
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+
+
+class PersonaEquipo(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
+    estado = models.BooleanField(default=True)
+
+
