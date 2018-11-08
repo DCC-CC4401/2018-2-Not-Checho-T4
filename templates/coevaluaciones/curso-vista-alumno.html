@@ -27,7 +27,7 @@
                 <ul class="navbar-nav ml-auto">
                     <li class="divider-vertical"></li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Juanito Pérez</a>
+                        <a class="nav-link" href="#">{{ user.first_name }} {{ user.last_name }}</a>
                     </li>
                     <li class="divider-vertical"></li>
                     <li class="nav-item">
@@ -44,7 +44,7 @@
             <h3 class="d-inline-block page-title">Ficha de Curso</h3>
             <h5 class="mb-3">
                 <div class="cargos cargos-alumno"></div>
-                CC4401-1 Ingeniería de Software 2018, Primavera
+                {{ curso.codigo }}-{{ curso.seccion }} {{ curso.nombre }} {{ curso.anho }}, semestre {{ curso.semestre }}
             </h5>
             <hr/>
             <!-- Tablas de resumen -->
@@ -68,53 +68,29 @@
 
                             <!-- Cuerpo de tabla (Table Data) -->
                             <tbody>
+                                {% for c in usercoev %}
                                 <tr class="tr-pendiente"> <!-- Fila destacada como Pendiente -->
                                     <!-- Fecha de inicio -->
                                     <td class="td-fecha">
-                                        20:01 01/12/18
+                                        {{ c.coevaluacion.inicio }}
                                     </td>
                                     <!-- Título de coevaluación -->
-                                    <td>Tarea final</td>
+                                    <td>{{ c.coevaluacion.nombre }}</td>
                                     <!-- Fecha de término -->
                                     <td class="td-fecha">
-                                        23:59 20/12/18
+                                        {{ c.coevaluacion.fin }}
                                     </td>
                                     <!-- Estado -->
-                                    <td>Pendiente</td>
+                                    <td> {{ c.estado }}</td>
                                     <!-- Ícono de acción (responder) -->
-                                    <td class="td-icon">
-                                        <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28"></a>
-                                    </td>
+
+                                        <td class="td-icon">
+                                            {% if c.estado == "Pendiente" %}
+                                            <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="static/icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28"></a>
+                                            {% endif %}
+                                        </td>
                                 </tr>
-                                <tr class="tr-pendiente">
-                                    <td class="td-fecha">
-                                        12:03 11/11/18
-                                    </td>
-                                    <td>Tarea con nombre muy largo que ocupa todo el espacio</td>
-                                    <td class="td-fecha">
-                                        23:59 21/11/18
-                                    </td>
-                                    <td>Pendiente</td>
-                                    <td class="td-icon">
-                                        <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28"></a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="td-fecha">15:15 10/11/18</td>
-                                    <td>Tarea 2</td>
-                                    <td class="td-fecha">23:59 19/11/18</td>
-                                    <td>Cerrada</td>
-                                    <td class="td-icon">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="td-fecha">03:53 20/10/18</td>
-                                    <td>Tarea 1</td>
-                                    <td class="td-fecha">23:59 27/10/18</td>
-                                    <td>Publicada</td>
-                                    <td class="td-icon">
-                                    </td>
-                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
