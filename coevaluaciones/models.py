@@ -1,6 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
 
 
 class Curso(models.Model):
@@ -53,28 +53,28 @@ class Coevaluacion(models.Model):
     # textos de las preguntas
     preguntas = models.ForeignKey(Preguntas, on_delete=models.CASCADE)
     # ponderaciones de las preguntas
-    p1 = models.DecimalField(max_digits=5,decimal_places=3)
-    p2 = models.DecimalField(max_digits=5,decimal_places=3)
-    p3 = models.DecimalField(max_digits=5,decimal_places=3)
-    p4 = models.DecimalField(max_digits=5,decimal_places=3)
-    p5 = models.DecimalField(max_digits=5,decimal_places=3)
-    p6 = models.DecimalField(max_digits=5,decimal_places=3)
-    p7 = models.DecimalField(max_digits=5,decimal_places=3)
-    p8 = models.DecimalField(max_digits=5,decimal_places=3)
+    p1 = models.DecimalField(max_digits=5, decimal_places=3)
+    p2 = models.DecimalField(max_digits=5, decimal_places=3)
+    p3 = models.DecimalField(max_digits=5, decimal_places=3)
+    p4 = models.DecimalField(max_digits=5, decimal_places=3)
+    p5 = models.DecimalField(max_digits=5, decimal_places=3)
+    p6 = models.DecimalField(max_digits=5, decimal_places=3)
+    p7 = models.DecimalField(max_digits=5, decimal_places=3)
+    p8 = models.DecimalField(max_digits=5, decimal_places=3)
 
 
 class Resultado(models.Model):
     coevaluacion = models.ForeignKey(Coevaluacion, on_delete=models.CASCADE)
-    evaluador = models.ForeignKey(User,on_delete=models.CASCADE, related_name='evalua')
+    evaluador = models.ForeignKey(User, on_delete=models.CASCADE, related_name='evalua')
     evaluado = models.ForeignKey(User, on_delete=models.CASCADE, related_name='evaluado')
-    a1 = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(7)])
-    a2 = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(7)])
-    a3 = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(7)])
-    a4 = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(7)])
-    a5 = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(7)])
-    a6 = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(7)])
-    a7 = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(7)])
-    a8 = models.IntegerField(validators=[MinValueValidator(1),MaxValueValidator(7)])
+    a1 = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(7)])
+    a2 = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(7)])
+    a3 = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(7)])
+    a4 = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(7)])
+    a5 = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(7)])
+    a6 = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(7)])
+    a7 = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(7)])
+    a8 = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(7)])
     a9 = models.CharField(max_length=500)
     a10 = models.CharField(max_length=500)
     a11 = models.CharField(max_length=500)
@@ -85,11 +85,19 @@ class CoevEstud(models.Model):
     coevaluacion = models.ForeignKey(Coevaluacion, on_delete=models.CASCADE)
     equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
     estado = models.CharField(max_length=30)
-    r1 = models.DecimalField(default=None, validators=[MinValueValidator(1),MaxValueValidator(7)],max_digits=5,decimal_places=3)
-    r2 = models.DecimalField(default=None, validators=[MinValueValidator(1),MaxValueValidator(7)],max_digits=5,decimal_places=3)
-    r3 = models.DecimalField(default=None, validators=[MinValueValidator(1),MaxValueValidator(7)],max_digits=5,decimal_places=3)
-    r4 = models.DecimalField(default=None, validators=[MinValueValidator(1),MaxValueValidator(7)],max_digits=5,decimal_places=3)
-    r5 = models.DecimalField(default=None, validators=[MinValueValidator(1),MaxValueValidator(7)],max_digits=5,decimal_places=3)
-    r6 = models.DecimalField(default=None, validators=[MinValueValidator(1),MaxValueValidator(7)],max_digits=5,decimal_places=3)
-    r7 = models.DecimalField(default=None, validators=[MinValueValidator(1),MaxValueValidator(7)],max_digits=5,decimal_places=3)
-    r8 = models.DecimalField(default=None, validators=[MinValueValidator(1),MaxValueValidator(7)],max_digits=5,decimal_places=3)
+    r1 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+                             decimal_places=3)
+    r2 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+                             decimal_places=3)
+    r3 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+                             decimal_places=3)
+    r4 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+                             decimal_places=3)
+    r5 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+                             decimal_places=3)
+    r6 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+                             decimal_places=3)
+    r7 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+                             decimal_places=3)
+    r8 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+                             decimal_places=3)
