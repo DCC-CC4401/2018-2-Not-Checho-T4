@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
+from coevaluaciones.models import Roles
+
 
 def login_user(request):
     logout(request)
@@ -20,4 +22,7 @@ def login_user(request):
 
 @login_required(login_url='/login')
 def landing_page(request):
-    return render(request, "coevaluaciones/home-vista-alumno.html", {})
+    username = request.user.username
+    roles = Roles.objects.filter(user__username=username)
+    context = {"roles_usuario": roles}
+    return render(request, "coevaluaciones/landing-page.html", context)
