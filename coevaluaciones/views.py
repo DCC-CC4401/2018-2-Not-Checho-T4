@@ -25,7 +25,7 @@ def landing_page(request):
 
 
 @login_required(login_url='/login')
-def ficha_curso(request, curso_id):
+def ficha_curso(request,curso_id):
     user = request.user
     #curso = Curso.objects.get(id=curso_id)
     curso = Curso.objects.get(nombre="Ingenieria de Software", codigo="CC4401", seccion=2,anho=2018,semestre=1)
