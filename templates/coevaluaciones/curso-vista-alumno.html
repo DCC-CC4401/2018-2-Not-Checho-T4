@@ -13,10 +13,8 @@
         $(document).ready(function() {
             $('tr').click(function() {
                 var action = $(this).find("form").attr("action");
-                var form = $('<form action="'+action+'" method="post"> {% csrf_token %}');
-                $('body').append(form);
                 if(action) {
-                    form.submit();
+                    window.location=action;
                 }
             });
         });
@@ -86,7 +84,7 @@
                                 {% else %}
                             <tr>
                         {% endif %}
-                    <form action="{% url 'ficha_coevaluacion' c.coevaluacion.id %}" method="post">
+                    <form action="{% url 'ficha_coevaluacion' c.coevaluacion.id %}" method="get">
                         {% csrf_token %}
                         <!-- Fecha de inicio -->
                         <td class="td-fecha">
@@ -102,15 +100,18 @@
                         </td>
                         <!-- Estado -->
                         <td>
+                        {% if c.coevaluacion.estado == "Abierta" %}
                             {{ c.estado }}
-                        </td>
+                        {% else %}
+                            {{ c.coevaluacion.estado }}
+                        {% endif %}</td>
                         <!-- Ícono de acción (responder) -->
 
                         <td class="td-icon">
                             {% if c.estado == "Pendiente" %}
                                 <form action="{% url 'ficha_coevaluacion' c.coevaluacion.id %}" method="post">
                                     {% csrf_token %}
-                                    <input type="image" class="clickable-icon answer-icon wiggle" src="static/icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28">
+                                    <input type="image" class="clickable-icon answer-icon wiggle" src="/static/icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28">
                                 </form>
                             {% endif %}
                         </td>
@@ -129,4 +130,3 @@
 
 </body>
 </html>
-        
