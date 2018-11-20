@@ -18,21 +18,21 @@ class AddResultadoForm(forms.Form):
     evaluado_id = forms.IntegerField(widget=forms.HiddenInput())
     coevaluacion_id = forms.IntegerField(widget=forms.HiddenInput())
     a1 = forms.IntegerField(label=PREGUNTAS[0],
-                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
+                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR, attrs={'class': 'inline'}))
     a2 = forms.IntegerField(label=PREGUNTAS[1],
-                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
+                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR, attrs={'class': 'inline'}))
     a3 = forms.IntegerField(label=PREGUNTAS[2],
-                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
+                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR, attrs={'class': 'inline'}))
     a4 = forms.IntegerField(label=PREGUNTAS[3],
-                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
+                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR, attrs={'class': 'inline'}))
     a5 = forms.IntegerField(label=PREGUNTAS[4],
-                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
+                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR, attrs={'class': 'inline'}))
     a6 = forms.IntegerField(label=PREGUNTAS[5],
-                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
+                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR, attrs={'class': 'inline'}))
     a7 = forms.IntegerField(label=PREGUNTAS[6],
-                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
+                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR, attrs={'class': 'inline'}))
     a8 = forms.IntegerField(label=PREGUNTAS[7],
-                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
+                            widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR, attrs={'class': 'inline'}))
     a9 = forms.CharField(label=PREGUNTAS[8],max_length=500, required=False,
                          widget=forms.Textarea(attrs={'cols': "80", 'rows': "10", 'class': 'form-control'}))
     a10 = forms.CharField(label=PREGUNTAS[9],max_length=500, required=False,
