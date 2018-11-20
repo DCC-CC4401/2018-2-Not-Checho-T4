@@ -9,7 +9,7 @@
         <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
         <script src="{% static 'js/coeval.js' %}"></script>
-        <title>Juanito Pérez - Sistema de Coevaluaciones DCC</title>
+        <title>{{ user.first_name }} {{ user.last_name }} - Sistema de Coevaluaciones DCC</title>
     </head>
     <body>
         <!-- Barra superior -->
@@ -27,7 +27,7 @@
                 <ul class="navbar-nav ml-auto">
                     <li class="divider-vertical"></li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Juanito Pérez</a>
+                        <a class="nav-link" href="#">{{ user.first_name }} {{ user.last_name }}</a>
                     </li>
                     <li class="divider-vertical"></li>
                     <li class="nav-item">
@@ -50,11 +50,11 @@
                 <div class="col-md-3 mb-3">
                     <h4 class="d-inline-block mt-1">Tu Perfil</h4>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Nombre</h6>
-                    <span>Juanito Juan Pérez Pereira</span>
+                    <span>{{ user.first_name }} {{ user.last_name }}</span>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">RUT</h6>
-                    <span>12.345.678-9</span>
+                    <span>{{ user }}</span>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Correo Electrónico</h6>
-                    <span>lorem@ipsum.com</span>
+                    <span>{{ user.email }}</span>
                     <button type="button" id="change-pass-btn" class="btn btn-secondary mt-3 d-block" onclick="changePass()">Cambiar contraseña</button>
                     <span class="small">(clickeable)</span>
                 </div>
@@ -63,7 +63,6 @@
                 <!-- Tabla de cursos -->
                 <div class="col-md-4 mb-3">
                     <h4 class="d-inline-block mt-1">Tus Cursos</h4>
-
                     <div class="table-wrap table-responsive my-1">
                         <table class="table table-cursos-perfil table-striped table-hover mb-0">
                             <!-- Encabezados de tabla (Table Headers) -->
@@ -75,39 +74,28 @@
                             </thead>
                             <!-- Cuerpo de tabla (Table Data) -->
                             <tbody>
-                                <tr id="row-btn" onclick="showNotas()">
-                                    <td class="td-curso-full">
-                                        <div class="cargos cargos-alumno tooltip-custom">
-                                            <span class="tooltiptext"></span>
+                                {% for a in aux %}
+                                    <tr id="row-btn" onclick="showNotas()">
+                                        <td class="td-curso-full">
+                                            {% if a.rol == "Alumno" %}
+                                                <div class="cargos cargos-alumno tooltip-custom">
+                                            {% endif %}
+                                            {% if a.rol == "Auxiliar" %}
+                                                <div class="cargos cargos-auxiliar tooltip-custom">
+                                            {% endif %}
+                                            {% if a.rol == "Profesor" %}
+                                                <div class="cargos cargos-profesor tooltip-custom">
+                                            {% endif %}
+                                    <span class="tooltiptext"></span>
                                         </div>
-                                        <span class="curso-nombre">Proyecto de Software (clickeable)</span>
+                                        <span class="curso-nombre">{{ a.curso.nombre }}
+                                            </span>
                                         <br>
-                                        <span class="curso-codigo">CC5402-1</span>
+                                        <span class="curso-codigo">{{ a.curso.codigo }}-{{ a.curso.seccion }}</span>
                                     </td>
-                                    <td>2018-2</td>
-                                </tr>
-                                <tr>
-                                    <td class="td-curso-full">
-                                        <div class="cargos cargos-alumno tooltip-custom">
-                                            <span class="tooltiptext"></span>
-                                        </div>
-                                        <span class="curso-nombre">Ingeniería de Software II</span>
-                                        <br>
-                                        <span class="curso-codigo">CC5401-1</span>
-                                    </td>
-                                    <td>2018-1</td>
-                                </tr>
-                                <tr>
-                                    <td class="td-curso-full">
-                                        <div class="cargos cargos-alumno tooltip-custom">
-                                            <span class="tooltiptext"></span>
-                                        </div>
-                                        <span class="curso-nombre">Ingeniería de Software I</span>
-                                        <br>
-                                        <span class="curso-codigo">CC4401-1</span>
-                                    </td>
-                                    <td>2017-2</td>
-                                </tr>
+                                    <td>{{ a.curso.anho }}-{{ a.curso.semestre }}</td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -140,7 +128,7 @@
                     </div>
                     <div id="notas-resumen">
                         <h4 class="d-inline-block mt-1">Tus Notas</h4>
-                        <h5 class="float-right mb-0 mt-2 text-muted" id="currentCurso">CC5402-1, 2018-2</h5>
+                        <h5 class="float-right mb-0 mt-2 text-muted" id="currentCurso">CCXXXX-1, 20XX-2</h5>
 
                         <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
                             <table class="table table-notas-perfil table-striped table-hover mb-0"> <!-- Tabla -->
@@ -155,28 +143,20 @@
 
                                 <!-- Cuerpo de tabla (Table Data) -->
                                 <tbody>
+                                {%  for t in res%}
                                     <tr>
                                         <!-- Fecha de publicación -->
-                                        <td class="td-fecha">23:59 22/11/17</td>
+                                        <td class="td-fecha">{{ t.0 }}</td>
                                         <!-- Título de coevaluación -->
-                                        <td>Tarea 4</td>
+                                        <td>{{ t.1 }}</td>
                                         <!-- Nota -->
-                                        <td class="td-nota">6.2</td>
+                                        <td class="td-nota">{{ t.2 }}</td>
                                     </tr>
+                                {% endfor %}
                                     <tr>
                                         <td class="td-fecha">23:59 13/10/17</td>
                                         <td>Tarea 3</td>
                                         <td class="td-nota td-nota-roja">3.8</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="td-fecha">23:59 17/09/17</td>
-                                        <td>Tarea 2</td>
-                                        <td class="td-nota">5.7</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="td-fecha">12:15 20/08/17</td>
-                                        <td>Tarea 1</td>
-                                        <td class="td-nota">6.5</td>
                                     </tr>
                                 </tbody>
                             </table>

@@ -23,6 +23,37 @@ def login_user(request):
 def landing_page(request):
     return render(request, "coevaluaciones/home-vista-alumno.html", {})
 
+@login_required(login_url='/login')
+def perfil(request):
+    #Tu Perfil
+    user = request.user
+
+    #Tus Cursos
+    aux = Roles.objects.none()
+    for c in Curso.objects.filter().order_by('-anho', '-semestre'):
+        for r in Roles.objects.filter(user=user):
+            if r.curso == c:
+                aux |= Roles.objects.filter(user=user, curso=c)
+
+    #Tus Notas
+    res = []
+    for r in Resultado.objects.filter(evaluado=user):
+        temp = 0
+        temp += r.a1 * r.coevaluacion.p1
+        temp += r.a2 * r.coevaluacion.p2
+        temp += r.a3 * r.coevaluacion.p3
+        temp += r.a4 * r.coevaluacion.p4
+        temp += r.a5 * r.coevaluacion.p5
+        temp += r.a6 * r.coevaluacion.p6
+        temp += r.a7 * r.coevaluacion.p7
+        temp += r.a8 * r.coevaluacion.p8
+        res.append([r.coevaluacion.inicio, r.coevaluacion.nombre, round(temp, 1)])
+    def takeFirst(list):
+        return list[0]
+    res.sort(key=takeFirst, reverse=True)
+
+    #Return
+    return render(request, "coevaluaciones/perfil-vista-dueno.html", {'user': user, 'aux': aux, 'res': res})
 
 @login_required(login_url='/login')
 def ficha_curso(request,curso_id):
