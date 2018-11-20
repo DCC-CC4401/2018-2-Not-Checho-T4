@@ -28,7 +28,7 @@ def landing_page(request):
 
 
 @login_required(login_url='/login')
-def ficha_curso(request):#,curso_id):
+def ficha_curso(request,curso_id):
     user = request.user
     #curso = Curso.objects.get(id=curso_id)
     ## ojo harcodeado
