@@ -46,12 +46,12 @@ class Preguntas(models.Model):
 
 
 class Coevaluacion(models.Model):
-    ESTADOS = [('Publicada','Publicada'),('Cerrada','Cerrada'),('Abierta','Abierta')]
+    ESTADOS = [('Publicada', 'Publicada'), ('Cerrada', 'Cerrada'), ('Abierta', 'Abierta')]
     nombre = models.CharField(max_length=200)
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
     inicio = models.DateTimeField()
     fin = models.DateTimeField()
-    estado = models.CharField(max_length=25,choices=ESTADOS,default='Abierta')
+    estado = models.CharField(max_length=25, choices=ESTADOS, default='Abierta')
     # textos de las preguntas
     preguntas = models.ForeignKey(Preguntas, on_delete=models.CASCADE)
     # ponderaciones de las preguntas
