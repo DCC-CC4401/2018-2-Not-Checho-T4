@@ -13,10 +13,8 @@
         $(document).ready(function() {
             $('tr').click(function() {
                 var action = $(this).find("form").attr("action");
-                var form = $('<form action="'+action+'" method="post"> {% csrf_token %}');
-                $('body').append(form);
                 if(action) {
-                    form.submit();
+                    window.location=action;
                 }
             });
         });
@@ -86,7 +84,7 @@
                                 {% else %}
                             <tr>
                         {% endif %}
-                    <form action="{% url 'ficha_coevaluacion' c.coevaluacion.id %}" method="post">
+                    <form action="{% url 'ficha_coevaluacion' c.coevaluacion.id %}" method="get">
                         {% csrf_token %}
                         <!-- Fecha de inicio -->
                         <td class="td-fecha">
@@ -129,4 +127,3 @@
 
 </body>
 </html>
-        

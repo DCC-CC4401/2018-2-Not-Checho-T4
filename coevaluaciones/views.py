@@ -4,6 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from .models import Curso, Equipo, Roles, PersonaEquipo, Preguntas, Coevaluacion, Resultado, CoevEstud
+from .forms import AddResultadoForm
+from django.core import serializers
+
 
 def login_user(request):
     logout(request)
@@ -28,6 +31,7 @@ def landing_page(request):
 def ficha_curso(request):#,curso_id):
     user = request.user
     #curso = Curso.objects.get(id=curso_id)
+    ## ojo harcodeado
     curso = Curso.objects.get(nombre="Ingenieria de Software", codigo="CC4401", seccion=2,anho=2018,semestre=1)
     roli = Roles.objects.get(user=user,curso=curso)
     if roli.rol=="Alumno":
@@ -49,8 +53,35 @@ def ficha_coevaluacion(request, coev_id):
     coev = Coevaluacion.objects.get(id=coev_id)
     roli = Roles.objects.get(user=user, curso=coev.curso)
     if roli.rol=="Alumno":
-        coevest = CoevEstud.objects.get(user=user, coevaluacion=coev)
-        compas = CoevEstud.objects.filter(coevaluacion=coev, equipo=coevest.equipo).exclude(user=user)
-        return render(request, "coevaluaciones/coevaluacion-vista-alumno.html",{'user':user,'coevaluacion':coev,'curso':coev.curso,'coevest':coevest,'compas':compas})
+        ## ojo hardcodeado
+        preguntas = Preguntas.objects.get(id=4)
+        ##
+        user_coev = CoevEstud.objects.get(user=user, coevaluacion=coev)
+        companheros = CoevEstud.objects.filter(coevaluacion=coev, equipo=user_coev.equipo).exclude(user=user)
+
+        contestadas = []
+        for c in companheros:
+            presente = Resultado.objects.filter(evaluador=user,evaluado=c.user,coevaluacion=coev).first()
+            if presente is None:
+                contestadas.append([c.user,False])
+            else:
+                contestadas.append([c.user,True])
+
+        form = AddResultadoForm()
+        context = {'user': user, 'coevaluacion': coev, 'curso': coev.curso, 'user_coev': user_coev,
+                   'compas': companheros, 'eval_form': form, 'preguntas': preguntas,'contestadas':contestadas}
+        return render(request, "coevaluaciones/coevaluacion-vista-alumno.html",context)
     else:
         return render(request, "coevaluaciones/coevaluacion-vista-docente.html")
+
+
+@login_required(login_url='/login')
+def subir_coevaluacion(request, coev_id):
+    # user = request.user
+    # coev = Coevaluacion.objects.get(id=coev_id)
+    if request.method == 'POST':
+        form = AddResultadoForm(request.POST)
+        if form.is_valid():
+            form.save()
+    return redirect('ficha_coevaluacion', coev_id=coev_id)
+
