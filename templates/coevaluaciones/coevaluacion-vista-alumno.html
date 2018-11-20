@@ -27,7 +27,7 @@
                 <ul class="navbar-nav ml-auto">
                     <li class="divider-vertical"></li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Juanito Pérez</a>
+                        <a class="nav-link" href="#">{{ user.first_name }} {{ user.last_name }}</a>
                     </li>
                     <li class="divider-vertical"></li>
                     <li class="nav-item">
@@ -50,27 +50,27 @@
                 <div class="col-md-4 mb-3">
                     <h4 class="d-inline-block mt-1">Información</h4>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Título</h6>
-                    <span>Tarea 1</span>
+                    <span>{{ coevaluacion.nombre }}</span>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Curso</h6>
-                    <span>CC4401 Ingeniería de Software I 2018, Primavera</span>
+                    <span>{{ curso.codigo }}-{{ curso.seccion }} {{ curso.nombre }} {{ curso.anho }}, semestre {{ curso.semestre }}</span>
                     <div class="row">
                         <div class="col-6">
                             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Fecha de inicio</h6>
-                            <span>03:53 20/10/18</span>
+                            <span>{{ coevaluacion.inicio }}</span>
                         </div>
                         <div class="col-6">
                             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Fecha límite</h6>
-                            <span>23:59 27/10/18</span>
+                            <span>{{ coevaluacion.fin }}</span>
                         </div>
                     </div>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Estado</h6>
-                    <span>Abierta</span>
+                    <span>{{ coevest.estado }}</span>
                 </div>
                 <!-- FIN Información -->
 
                 <!-- Tabla de alumnos que no han contestado -->
                 <div class="col-md-6">
-                    <h4 class="d-inline-block mt-1">Tu grupo</h4>
+                    <h4 class="d-inline-block mt-1">Tu grupo: {{ coevest.equipo.nombre }}</h4>
 
                     <div class="table-wrap table-responsive my-1">
                         <table class="table table-grupo-coeval table-striped table-hover mb-0">
@@ -81,17 +81,19 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for u in compas %}
                                 <tr>
-                                    <td>Estudiante 1</td>
+                                    <td>{{ u.user.first_name }} {{ u.user.last_name }}</td>
                                     <td class="td-icon"></td>
                                 </tr>
+                                {% endfor %}
                                 <tr class="tr-pendiente" onclick="jumpTo('responder-coeval')">
                                     <td>Estudiante 2 (clickeable)</td>
-                                    <td class="td-icon"><a href="#responder-coeval" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28"></a></td>
-                                </tr>
-                                <tr>
-                                    <td>Estudiante 3</td>
-                                    <td class="td-icon"></td>
+                                    <td class="td-icon">
+                                        <a href="#" title="Responder coevaluación">
+                                            <img class="clickable-icon answer-icon wiggle" src="/static/icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28">
+                                        </a>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

@@ -25,7 +25,7 @@ def landing_page(request):
 
 
 @login_required(login_url='/login')
-def ficha_curso(request,curso_id):
+def ficha_curso(request):#,curso_id):
     user = request.user
     #curso = Curso.objects.get(id=curso_id)
     curso = Curso.objects.get(nombre="Ingenieria de Software", codigo="CC4401", seccion=2,anho=2018,semestre=1)
@@ -45,4 +45,12 @@ def ficha_curso(request,curso_id):
 
 @login_required(login_url='/login')
 def ficha_coevaluacion(request, coev_id):
-    return redirect('/')
+    user = request.user
+    coev = Coevaluacion.objects.get(id=coev_id)
+    roli = Roles.objects.get(user=user, curso=coev.curso)
+    if roli.rol=="Alumno":
+        coevest = CoevEstud.objects.get(user=user, coevaluacion=coev)
+        compas = CoevEstud.objects.filter(coevaluacion=coev, equipo=coevest.equipo).exclude(user=user)
+        return render(request, "coevaluaciones/coevaluacion-vista-alumno.html",{'user':user,'coevaluacion':coev,'curso':coev.curso,'coevest':coevest,'compas':compas})
+    else:
+        return render(request, "coevaluaciones/coevaluacion-vista-docente.html")

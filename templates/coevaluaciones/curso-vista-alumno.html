@@ -110,7 +110,7 @@
                             {% if c.estado == "Pendiente" %}
                                 <form action="{% url 'ficha_coevaluacion' c.coevaluacion.id %}" method="post">
                                     {% csrf_token %}
-                                    <input type="image" class="clickable-icon answer-icon wiggle" src="static/icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28">
+                                    <input type="image" class="clickable-icon answer-icon wiggle" src="/static/icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28">
                                 </form>
                             {% endif %}
                         </td>
