@@ -73,7 +73,11 @@
                 </div>
             </div>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Estado</h6>
-            <span>{{ user_coev.estado }}</span>
+            {% if coevaluacion.estado == "Abierta" %}
+                <span>{{ user_coev.estado }}</span>
+            {% else %}
+                <span>{{ coevaluacion.estado }}</span>
+            {% endif %}
         </div>
         <!-- FIN Información -->
 
@@ -119,7 +123,7 @@
         </div>
         <!-- FIN Tabla de alumnos que no han respondido -->
     </div>
-
+    {% if coevaluacion.estado == "Abierta" %}
     <h4 class="d-inline-block mt-1 mb-0">Responder coevaluación</h4>
     <hr/>
     <!-- Detalle de coevaluación contestada -->
@@ -153,6 +157,8 @@
             {% endfor %}
         </div>
     </div>
+    {% endif %}
+
 
 </div>
 

@@ -100,8 +100,11 @@
                         </td>
                         <!-- Estado -->
                         <td>
+                        {% if c.coevaluacion.estado == "Abierta" %}
                             {{ c.estado }}
-                        </td>
+                        {% else %}
+                            {{ c.coevaluacion.estado }}
+                        {% endif %}</td>
                         <!-- Ícono de acción (responder) -->
 
                         <td class="td-icon">

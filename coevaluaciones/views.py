@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from .models import Curso, Equipo, Roles, PersonaEquipo, Preguntas, Coevaluacion, Resultado, CoevEstud
 from .forms import AddResultadoForm
-from django.core import serializers
+from django.utils import timezone
 
 
 def login_user(request):
@@ -36,6 +36,8 @@ def ficha_curso(request):#,curso_id):
     roli = Roles.objects.get(user=user,curso=curso)
     if roli.rol=="Alumno":
         coevs = Coevaluacion.objects.filter(curso=curso).order_by('-fin')
+        for c in coevs:
+            actualizar_coevaluacion(c)
         queryset = CoevEstud.objects.none()
         for i in range(len(coevs)):
             queryset |= CoevEstud.objects.filter(user=user,coevaluacion__exact=coevs[i])
@@ -51,6 +53,7 @@ def ficha_curso(request):#,curso_id):
 def ficha_coevaluacion(request, coev_id):
     user = request.user
     coevaluacion = Coevaluacion.objects.get(id=coev_id)
+    actualizar_coevaluacion(coevaluacion)
     roli = Roles.objects.get(user=user, curso=coevaluacion.curso)
     if roli.rol=="Alumno":
         # Compañeros
@@ -93,4 +96,15 @@ def subir_coevaluacion(request, coev_id):
         if form.is_valid():
             form.save()
     return redirect('ficha_coevaluacion', coev_id=coev_id)
+
+
+def actualizar_coevaluacion(coevaluacion):
+    fecha_termino = coevaluacion.fin
+    fecha_actual = timezone.now()
+    if fecha_termino < fecha_actual:
+        coevaluacion.estado = "Cerrada"
+        coevaluacion.save()
+    else: # Para prueba de funcion
+        coevaluacion.estado = "Abierta"
+        coevaluacion.save()
 
