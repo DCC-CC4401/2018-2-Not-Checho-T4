@@ -4,33 +4,40 @@ from django.contrib.auth.models import User
 
 
 NOTAS_A_ELEGIR = [(1,'1'),(2,'2'),(3,'3'),(4,'4'),(5,'5'),(6,'6'),(7,'7')]
-
+PREGUNTAS = ["¿Demuestra compromiso con el proyecto?",
+             "¿Cumple de manera adecuada con las tareas que le son asignadas?",
+             "¿Demuestra iniciativa para lograr el éxito del proyecto?",
+             "¿Mantiene buena comunicación con el resto del equipo?",
+             "¿Mantiene buena coordinación entre sus tareas y las de sus pares?",
+             "¿La calidad de su trabajo es la apropiada para lograr el éxito del proyecto?",
+             "¿Ofrece apoyo en las tareas que van más allá del rol asignado?",
+             "¿Es capaz de admitir sus equivocaciones y recibir críticas?",
+             "Fortalezas","Debilidades","Comentario"]
 class AddResultadoForm(forms.Form):
-    preguntas = Preguntas.objects.get(id=4)
     usuario_id = forms.IntegerField(widget=forms.HiddenInput())
     evaluado_id = forms.IntegerField(widget=forms.HiddenInput())
     coevaluacion_id = forms.IntegerField(widget=forms.HiddenInput())
-    a1 = forms.IntegerField(label=preguntas.q1,
+    a1 = forms.IntegerField(label=PREGUNTAS[0],
                             widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
-    a2 = forms.IntegerField(label=preguntas.q2,
+    a2 = forms.IntegerField(label=PREGUNTAS[1],
                             widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
-    a3 = forms.IntegerField(label=preguntas.q3,
+    a3 = forms.IntegerField(label=PREGUNTAS[2],
                             widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
-    a4 = forms.IntegerField(label=preguntas.q4,
+    a4 = forms.IntegerField(label=PREGUNTAS[3],
                             widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
-    a5 = forms.IntegerField(label=preguntas.q5,
+    a5 = forms.IntegerField(label=PREGUNTAS[4],
                             widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
-    a6 = forms.IntegerField(label=preguntas.q6,
+    a6 = forms.IntegerField(label=PREGUNTAS[5],
                             widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
-    a7 = forms.IntegerField(label=preguntas.q7,
+    a7 = forms.IntegerField(label=PREGUNTAS[6],
                             widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
-    a8 = forms.IntegerField(label=preguntas.q8,
+    a8 = forms.IntegerField(label=PREGUNTAS[7],
                             widget=forms.RadioSelect(choices=NOTAS_A_ELEGIR))
-    a9 = forms.CharField(label=preguntas.q9,max_length=500, required=False,
+    a9 = forms.CharField(label=PREGUNTAS[8],max_length=500, required=False,
                          widget=forms.Textarea(attrs={'cols': "80", 'rows': "10", 'class': 'form-control'}))
-    a10 = forms.CharField(label=preguntas.q10,max_length=500, required=False,
+    a10 = forms.CharField(label=PREGUNTAS[9],max_length=500, required=False,
                           widget=forms.Textarea(attrs={'cols': "80", 'rows': "10", 'class': 'form-control'}))
-    a11 = forms.CharField(label=preguntas.q11,max_length=500, required=False,
+    a11 = forms.CharField(label=PREGUNTAS[10],max_length=500, required=False,
                           widget=forms.Textarea(attrs={'cols': "80", 'rows': "10", 'class': 'form-control'}))
 
     def save(self, *args, **kwargs):

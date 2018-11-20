@@ -50,26 +50,35 @@ def ficha_curso(request):#,curso_id):
 @login_required(login_url='/login')
 def ficha_coevaluacion(request, coev_id):
     user = request.user
-    coev = Coevaluacion.objects.get(id=coev_id)
-    roli = Roles.objects.get(user=user, curso=coev.curso)
+    coevaluacion = Coevaluacion.objects.get(id=coev_id)
+    roli = Roles.objects.get(user=user, curso=coevaluacion.curso)
     if roli.rol=="Alumno":
-        ## ojo hardcodeado
-        preguntas = Preguntas.objects.get(id=4)
-        ##
-        user_coev = CoevEstud.objects.get(user=user, coevaluacion=coev)
-        companheros = CoevEstud.objects.filter(coevaluacion=coev, equipo=user_coev.equipo).exclude(user=user)
-
+        # Compañeros
+        user_coev = CoevEstud.objects.get(user=user, coevaluacion=coevaluacion)
+        companheros = CoevEstud.objects.filter(coevaluacion=coevaluacion, equipo=user_coev.equipo).exclude(user=user)
+        # Estado para compañeros
         contestadas = []
         for c in companheros:
-            presente = Resultado.objects.filter(evaluador=user,evaluado=c.user,coevaluacion=coev).first()
+            presente = Resultado.objects.filter(evaluador=user,evaluado=c.user,coevaluacion=coevaluacion).first()
             if presente is None:
                 contestadas.append([c.user,False])
             else:
                 contestadas.append([c.user,True])
+        # Estado de la coevaluacion del estudiante
+        l = 0
+        for c in contestadas:
+            if not c[1]:
+                l = 1
+        if l == 0: # si contesto para todos
+            user_coev.estado = "Contestada"
+            user_coev.save()
+        else:
+            user_coev.estado = "Pendiente"
+            user_coev.save()
 
         form = AddResultadoForm()
-        context = {'user': user, 'coevaluacion': coev, 'curso': coev.curso, 'user_coev': user_coev,
-                   'compas': companheros, 'eval_form': form, 'preguntas': preguntas,'contestadas':contestadas}
+        context = {'user': user, 'coevaluacion': coevaluacion, 'curso': coevaluacion.curso, 'user_coev': user_coev,
+                   'eval_form': form,'contestadas':contestadas}
         return render(request, "coevaluaciones/coevaluacion-vista-alumno.html",context)
     else:
         return render(request, "coevaluaciones/coevaluacion-vista-docente.html")
