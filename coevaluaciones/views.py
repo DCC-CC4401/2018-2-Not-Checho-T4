@@ -10,6 +10,7 @@ from .models import Curso, Coevaluacion, Resultado, CoevEstud
 
 
 def login_user(request):
+    """ Inicia sesión para un usuario.  """
     logout(request)
     if request.POST:
         username = request.POST['username'].replace('.', '').replace('-', '')
@@ -24,6 +25,13 @@ def login_user(request):
 
 
 @login_required(login_url='/login')
+def logout_user(request):
+    """ Cierra sesión para un usuario.  """
+    logout(request)
+    return redirect('login')
+
+
+@login_required(login_url='/login')
 def landing_page(request):
     """ Carga el landing page.
         En el landing page se muestrab los cursos cursados por el usuario, junto con su rol en estos y una tabla con
@@ -31,7 +39,8 @@ def landing_page(request):
     """
     user = request.user
     roles = Roles.objects.filter(user=user)
-    context = {"roles_usuario": roles}
+    context = {"user": user,
+               "roles_usuario": roles}
     return render(request, "coevaluaciones/landing-page.html", context)
 
 
