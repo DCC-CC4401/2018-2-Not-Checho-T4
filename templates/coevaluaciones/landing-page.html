@@ -9,6 +9,14 @@
     <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/coeval.js' %}"></script>
+    <!--    Hay que pasar el script a un archivo.   -->
+    <script>
+        $(document).ready(function ($) {
+            $(".clickable-row").click(function () {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
     <title>Sistema de Coevaluaciones DCC</title>
 </head>
 <body>
@@ -256,7 +264,7 @@
                     <!-- Cuerpo de tabla (Table Data) -->
                     <tbody>
                     {% for rol in roles_usuario %}
-                        <tr>
+                        <tr class="clickable-row" data-href="{% url 'ficha_curso' curso_id=rol.curso_id %}">
                             <td class="td-curso-full">
                                 <div class="cargos cargos-alumno tooltip-custom">
                                     <span class="tooltiptext"></span>
