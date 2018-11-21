@@ -13,10 +13,16 @@ class Curso(models.Model):
     class Meta:
         unique_together = (("codigo", "seccion", "anho", "semestre"),)
 
+    def __str__(self):
+        return f"Curso: {self.codigo}-{self.seccion} {self.nombre} {self.anho}-{self.semestre}"
+
 
 class Equipo(models.Model):
     nombre = models.CharField(max_length=250)
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Equipo: {self.nombre} - {self.curso}"
 
 
 class Roles(models.Model):
@@ -24,11 +30,17 @@ class Roles(models.Model):
     rol = models.CharField(max_length=50)
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"Rol: {self.user} - {self.rol} - {self.curso}"
+
 
 class PersonaEquipo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
     estado = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"Persona-Equipo: {self.user} - {self.equipo} - {self.estado}"
 
 
 class Preguntas(models.Model):
@@ -63,6 +75,9 @@ class Coevaluacion(models.Model):
     p6 = models.DecimalField(max_digits=5, decimal_places=3)
     p7 = models.DecimalField(max_digits=5, decimal_places=3)
     p8 = models.DecimalField(max_digits=5, decimal_places=3)
+
+    def __str__(self):
+        return f"Coevaluacion: {self.nombre} - {self.curso}"
 
 
 class Resultado(models.Model):
@@ -103,3 +118,6 @@ class CoevEstud(models.Model):
                              decimal_places=3)
     r8 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
                              decimal_places=3)
+
+    def __str__(self):
+        return f"{self.user} - {self.equipo} - {self.coevaluacion}"
