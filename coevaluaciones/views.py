@@ -34,13 +34,15 @@ def logout_user(request):
 @login_required(login_url='/login')
 def landing_page(request):
     """ Carga el landing page.
-        En el landing page se muestrab los cursos cursados por el usuario, junto con su rol en estos y una tabla con
+        En el landing page se muestran los cursos cursados por el usuario, junto con su rol en estos y una tabla con
         las 10 coevaluaciones más recientes.
     """
     user = request.user
     roles = Roles.objects.filter(user=user)
+    coevaluaciones = CoevEstud.objects.filter(user=user).order_by("-coevaluacion__fin")[:9]
     context = {"user": user,
-               "roles_usuario": roles}
+               "roles_usuario": roles,
+               "coev_estud": coevaluaciones}
     return render(request, "coevaluaciones/landing-page.html", context)
 
 
@@ -82,9 +84,7 @@ def perfil(request):
 @login_required(login_url='/login')
 def ficha_curso(request, curso_id):
     user = request.user
-    # curso = Curso.objects.get(id=curso_id)
-    # ojo harcodeado
-    curso = Curso.objects.get(nombre="Ingenieria de Software", codigo="CC4401", seccion=2, anho=2018, semestre=1)
+    curso = Curso.objects.get(id=curso_id)
     roli = Roles.objects.get(user=user, curso=curso)
     if roli.rol == "Alumno":
         coevs = Coevaluacion.objects.filter(curso=curso).order_by('-fin')
