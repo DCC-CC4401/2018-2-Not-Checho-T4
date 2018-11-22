@@ -143,21 +143,20 @@
 
                                 <!-- Cuerpo de tabla (Table Data) -->
                                 <tbody>
-                                {%  for t in res%}
+                                {% for n in notas %}
                                     <tr>
                                         <!-- Fecha de publicación -->
-                                        <td class="td-fecha">{{ t.0 }}</td>
+                                        <td class="td-fecha">{{ n.2 }}</td>
                                         <!-- Título de coevaluación -->
-                                        <td>{{ t.1 }}</td>
+                                        <td>{{ n.0 }}</td>
                                         <!-- Nota -->
-                                        <td class="td-nota">{{ t.2 }}</td>
+                                        {% if n.1 >= 4.0 %}
+                                            <td class="td-nota">{{ n.1 }}</td>
+                                        {% else %}
+                                            <td class="td-nota td-nota-roja">{{ n.1 }}</td>
+                                        {% endif %}
                                     </tr>
                                 {% endfor %}
-                                    <tr>
-                                        <td class="td-fecha">23:59 13/10/17</td>
-                                        <td>Tarea 3</td>
-                                        <td class="td-nota td-nota-roja">3.8</td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
