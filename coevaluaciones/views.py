@@ -126,7 +126,7 @@ def ficha_curso(request, curso_id):
         for i in range(len(coevs)):
             queryset |= CoevEstud.objects.filter(user=user, coevaluacion__exact=coevs[i])
         return render(request, "coevaluaciones/curso-vista-alumno.html",
-                      {'user': user, 'curso': curso, 'coevs': coevs, 'usercoev': queryset})
+                      {'user': user, 'curso': curso, 'usercoev': queryset})
     else:
         # user_coev = CoevEstud.objects.filter(user=user)
         # if es un estudiante

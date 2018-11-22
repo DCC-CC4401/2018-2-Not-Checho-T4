@@ -40,7 +40,7 @@
             </li>
             <li class="divider-vertical"></li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Cerrar Sesión</a>
+                 <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
             </li>
         </ul>
     </div>
@@ -65,11 +65,11 @@
             <div class="row">
                 <div class="col-6">
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Fecha de inicio</h6>
-                    <span>{{ coevaluacion.inicio }}</span>
+                    <span>{{ coevaluacion.inicio|date:'H:i d/m/y' }}</span>
                 </div>
                 <div class="col-6">
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Fecha límite</h6>
-                    <span>{{ coevaluacion.fin }}</span>
+                    <span>{{ coevaluacion.fin|date:'H:i d/m/y' }}</span>
                 </div>
             </div>
             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Estado</h6>

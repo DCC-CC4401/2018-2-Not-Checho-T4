@@ -41,7 +41,7 @@
             </li>
             <li class="divider-vertical"></li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Cerrar Sesión</a>
+                 <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
             </li>
         </ul>
     </div>
@@ -88,7 +88,7 @@
                         {% csrf_token %}
                         <!-- Fecha de inicio -->
                         <td class="td-fecha">
-                            {{ c.coevaluacion.inicio }}
+                            {{ c.coevaluacion.inicio|date:'H:i d/m/y' }}
                         </td>
                         <!-- Título de coevaluación -->
                         <td>
@@ -96,7 +96,7 @@
                         </td>
                         <!-- Fecha de término -->
                         <td class="td-fecha">
-                            {{ c.coevaluacion.fin }}
+                            {{ c.coevaluacion.fin|date:'H:i d/m/y' }}
                         </td>
                         <!-- Estado -->
                         <td>
