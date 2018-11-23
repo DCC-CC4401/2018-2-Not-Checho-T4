@@ -74,5 +74,34 @@ class AddResultadoForm(forms.Form):
             r.a10 = self.cleaned_data['a10']
             r.a11 = self.cleaned_data['a11']
             r.save()
+        # Cambia el resultado del evaluado
+        ce = CoevEstud.objects.get(user=e,coevaluacion=c)
+        set_r = Resultado.objects.filter(coevaluacion=c, evaluado=e)
+        r1 = 0
+        r2 = 0
+        r3 = 0
+        r4 = 0
+        r5 = 0
+        r6 = 0
+        r7 = 0
+        r8 = 0
+        for i in set_r:
+            r1 += i.a1
+            r2 += i.a2
+            r3 += i.a3
+            r4 += i.a4
+            r5 += i.a5
+            r6 += i.a6
+            r7 += i.a7
+            r8 += i.a8
+        ce.r1 = r1 / len(set_r)
+        ce.r2 = r2 / len(set_r)
+        ce.r3 = r3 / len(set_r)
+        ce.r4 = r4 / len(set_r)
+        ce.r5 = r5 / len(set_r)
+        ce.r6 = r6 / len(set_r)
+        ce.r7 = r7 / len(set_r)
+        ce.r8 = r8 / len(set_r)
+        ce.save()
 
 
