@@ -115,6 +115,7 @@ def cambiarContra(request):
         if passNew == passNewConfirm:
             userName.set_password(passNew)
             userName.save()
+            login(request, userName)
     return HttpResponseRedirect('/perfil')
 
 @login_required(login_url='/login')
