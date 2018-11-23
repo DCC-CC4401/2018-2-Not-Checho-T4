@@ -9,6 +9,13 @@
         <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
         <script src="{% static 'js/coeval.js' %}"></script>
+        <script>
+            $(document).ready(function ($) {
+                $(".clickable-row").click(function () {
+                    window.location = $(this).data("href");
+                });
+            });
+        </script>
         <title>Sistema de Coevaluaciones DCC</title>
     </head>
     <body>
@@ -26,16 +33,17 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
                     <form class="nav-link form-inline my-2 my-lg-0">
-                        <input class="form-control" type="search" placeholder="Buscar alumno..." aria-label="Buscar alumno">
+                        <input class="form-control" type="search" placeholder="Buscar alumno..."
+                               aria-label="Buscar alumno">
                     </form>
                     <li class="divider-vertical"></li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Juanito Pérez</a>
-                    </li>
-                    <li class="divider-vertical"></li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Cerrar Sesión</a>
-                    </li>
+                <a class="nav-link" href="{% url 'perfil' %}">{{ user.first_name }} {{ user.last_name }}</a>
+            </li>
+            <li class="divider-vertical"></li>
+            <li class="nav-item">
+                 <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
+            </li>
                 </ul>
             </div>
         </nav>
@@ -46,8 +54,16 @@
 
             <h3 class="d-inline-block page-title">Ficha de Curso</h3>
             <h5 class="mb-3">
+                {% if rol.upper == "PROFESOR" %}
                 <div class="cargos cargos-profesor"></div>
-                CC4401-1 Ingeniería de Software 2018, Primavera
+                {% endif %}
+                {% if rol.upper == "AUXILIAR" %}
+                <div class="cargos cargos-auxiliar"></div>
+                {% endif %}
+                {% if rol.upper == "AYUDANTE" %}
+                <div class="cargos cargos-ayudante"></div>
+                {% endif %}
+                       {{ curso.codigo }}-{{ curso.seccion }} {{ curso.nombre }} {{ curso.anho }}-{{ curso.semestre }}
             </h5>
             <hr/>
             <!-- Tablas de resumen -->
@@ -72,51 +88,31 @@
 
                             <!-- Cuerpo de tabla (Table Data) -->
                             <tbody>
-                                <tr>
+                                {% for c in coevaluaciones %}
+                                <tr class="clickable-row" data-href="{% url 'ficha_coevaluacion' c.id %}">
                                     <!-- Fecha de inicio -->
                                     <td class="td-fecha">
-                                        20:01 01/12/18
+                                        {{ c.inicio|date:'H:i d/m/y' }}
                                     </td>
                                     <!-- Título de coevaluación -->
-                                    <td>Tarea final</td>
+                                    <td>{{ c.nombre }}</td>
                                     <!-- Fecha de término -->
                                     <td class="td-fecha">
-                                        23:59 20/12/18
+                                        {{ c.fin|date:'H:i d/m/y' }}
                                     </td>
                                     <!-- Estado -->
-                                    <td>Abierta</td>
+                                    <td>{{ c.estado }}</td>
                                     <!-- Ícono de acción (responder) -->
-                                    <td class="td-icon"></td>
-                                </tr>
-                                <tr>
-                                    <td class="td-fecha">
-                                        12:03 11/11/18
-                                    </td>
-                                    <td>Tarea con nombre muy largo que ocupa todo el espacio</td>
-                                    <td class="td-fecha">
-                                        23:59 21/11/18
-                                    </td>
-                                    <td>Abierta</td>
-                                    <td class="td-icon"></td>
-                                </tr>
-                                <tr>
-                                    <td class="td-fecha">15:15 10/11/18</td>
-                                    <td>Tarea 2</td>
-                                    <td class="td-fecha">23:59 19/11/18</td>
-                                    <td>Cerrada</td>
                                     <td class="td-icon">
-                                        <a href="#" title="Publicar resultados"><img class="clickable-icon publish-icon wiggle" src="icon/publish-icon.png" alt="Publicar resultados" width="28" height="28"></a>
+                                        {% if c.estado == "Publicada" %}
+                                        <a href="#" title="Exportar resultados"><img class="clickable-icon export-icon" src="/static/icon/export-icon.png" alt="Exportar resultados" width="28" height="28"></a>
+                                        {% endif%}
+                                        {% if c.estado == "Cerrada" %}
+                                        <a href="#" title="Publicar resultados"><img class="clickable-icon publish-icon wiggle" src="/static/icon/publish-icon.png" alt="Publicar resultados" width="28" height="28"></a>
+                                        {% endif %}
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td class="td-fecha">03:53 20/10/18</td>
-                                    <td>Tarea 1</td>
-                                    <td class="td-fecha">23:59 27/10/18</td>
-                                    <td>Publicada</td>
-                                    <td class="td-icon">
-                                        <a href="#" title="Exportar resultados"><img class="clickable-icon export-icon" src="icon/export-icon.png" alt="Exportar resultados" width="28" height="28"></a>
-                                    </td>
-                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>

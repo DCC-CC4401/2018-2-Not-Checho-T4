@@ -118,8 +118,9 @@ def ficha_curso(request, curso_id):
     user = request.user
     curso = Curso.objects.get(id=curso_id)
     roli = Roles.objects.get(user=user, curso=curso)
+    coevs = Coevaluacion.objects.filter(curso=curso).order_by('-fin')
     if roli.rol == "Alumno":
-        coevs = Coevaluacion.objects.filter(curso=curso).order_by('-fin')
+
         for c in coevs:
             actualizar_coevaluacion(c)
         queryset = CoevEstud.objects.none()
@@ -127,10 +128,11 @@ def ficha_curso(request, curso_id):
             queryset |= CoevEstud.objects.filter(user=user, coevaluacion__exact=coevs[i])
         return render(request, "coevaluaciones/curso-vista-alumno.html",
                       {'user': user, 'curso': curso, 'usercoev': queryset})
+    elif roli.rol == "Profesor" or roli.rol == "Auxiliar" or roli.rol == "Ayudante":
+        return render(request, "coevaluaciones/curso-vista-docente.html",{'user': user,'rol':roli.rol,
+                                                                          'curso': curso,'coevaluaciones':coevs})
     else:
-        # user_coev = CoevEstud.objects.filter(user=user)
-        # if es un estudiante
-        return render(request, "coevaluaciones/curso-vista-docente.html")
+        return redirect('')
 
 
 @login_required(login_url='/login')
@@ -167,8 +169,10 @@ def ficha_coevaluacion(request, coev_id):
         context = {'user': user, 'coevaluacion': coevaluacion, 'curso': coevaluacion.curso, 'user_coev': user_coev,
                    'eval_form': form, 'contestadas': contestadas}
         return render(request, "coevaluaciones/coevaluacion-vista-alumno.html", context)
-    else:
+    elif roli.rol == "Profesor" or roli.rol == "Auxiliar" or roli.rol == "Ayudante":
         return render(request, "coevaluaciones/coevaluacion-vista-docente.html")
+    else:
+        return redirect('')
 
 
 @login_required(login_url='/login')
