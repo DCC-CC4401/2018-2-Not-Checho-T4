@@ -6,7 +6,7 @@ from django.utils import timezone
 
 from coevaluaciones.models import Roles
 from .forms import AddResultadoForm
-from .models import Curso, Coevaluacion, Resultado, CoevEstud
+from .models import Curso, Coevaluacion, Resultado, CoevEstud, Preguntas
 
 
 def login_user(request):
@@ -119,17 +119,17 @@ def ficha_curso(request, curso_id):
     curso = Curso.objects.get(id=curso_id)
     roli = Roles.objects.get(user=user, curso=curso)
     coevs = Coevaluacion.objects.filter(curso=curso).order_by('-fin')
+    for c in coevs:
+        actualizar_coevaluacion(c)
     if roli.rol == "Alumno":
-
-        for c in coevs:
-            actualizar_coevaluacion(c)
         queryset = CoevEstud.objects.none()
         for i in range(len(coevs)):
             queryset |= CoevEstud.objects.filter(user=user, coevaluacion__exact=coevs[i])
         return render(request, "coevaluaciones/curso-vista-alumno.html",
                       {'user': user, 'curso': curso, 'usercoev': queryset})
     elif roli.rol == "Profesor" or roli.rol == "Auxiliar" or roli.rol == "Ayudante":
-        return render(request, "coevaluaciones/curso-vista-docente.html",{'user': user,'rol':roli.rol,
+        form = AddCoevaluacionForm()
+        return render(request, "coevaluaciones/curso-vista-docente.html",{'user': user,'rol':roli.rol,'coev_form':form,
                                                                           'curso': curso,'coevaluaciones':coevs})
     else:
         return redirect('')
@@ -184,6 +184,45 @@ def subir_coevaluacion(request, coev_id):
         if form.is_valid():
             form.save()
     return redirect('ficha_coevaluacion', coev_id=coev_id)
+
+
+@login_required(login_url='/login')
+def agregar_coevaluacion(request, curso_id):
+    if request.method == 'POST':
+        nombre = request.POST['nombre_coev']
+        inicio = str(request.POST['fecha_inicio'] + ' '+ request.POST['hora_inicio'])
+        fin = str(request.POST['fecha_fin'] + ' '+ request.POST['hora_fin'])
+        curso = Curso.objects.get(id=request.POST['curso_id'])
+        p_p1 = request.POST['p_p1']
+        p_p2 = request.POST['p_p2']
+        p_p3 = request.POST['p_p3']
+        p_p4 = request.POST['p_p4']
+        p_p5 = request.POST['p_p5']
+        p_p6 = request.POST['p_p6']
+        p_p7 = request.POST['p_p7']
+        p_p8 = request.POST['p_p8']
+        sum = float(p_p1) + float(p_p2) + float(p_p3) + float(p_p4) + float(p_p5) +float(p_p6)+float(p_p7)+float(p_p8)
+        if sum != 1.0:
+            print('error')
+            #mensaje de error y retornar
+            #return redirect('ficha_curso',curso_id)
+        nueva_coevaluacion = Coevaluacion(nombre=nombre,
+                                          curso=curso,
+                                          inicio=inicio,
+                                          fin=fin,
+                                          preguntas= Preguntas.objects.all().first(),
+                                          p1=float(p_p1),
+                                          p2=float(p_p2),
+                                          p3=float(p_p3),
+                                          p4=float(p_p4),
+                                          p5=float(p_p5),
+                                          p6=float(p_p6),
+                                          p7=float(p_p7),
+                                          p8=float(p_p8))
+        nueva_coevaluacion.save()
+        #agregar los coevestud para todos los estudiantes con sus grupos correspondientes
+
+    return redirect('ficha_curso',curso_id)
 
 
 def actualizar_coevaluacion(coevaluacion):

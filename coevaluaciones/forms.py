@@ -1,6 +1,7 @@
 from django import forms
 from .models import Curso, Equipo, Roles, PersonaEquipo, Preguntas, Coevaluacion, Resultado, CoevEstud
 from django.contrib.auth.models import User
+from django.contrib.admin.widgets import AdminDateWidget
 
 
 NOTAS_A_ELEGIR = [(1,'1'),(2,'2'),(3,'3'),(4,'4'),(5,'5'),(6,'6'),(7,'7')]
@@ -103,5 +104,3 @@ class AddResultadoForm(forms.Form):
         ce.r7 = r7 / len(set_r)
         ce.r8 = r8 / len(set_r)
         ce.save()
-
-
