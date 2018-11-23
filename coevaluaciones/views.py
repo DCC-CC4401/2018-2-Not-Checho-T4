@@ -58,8 +58,6 @@ def perfil(request):
             if r.curso == c:
                 aux |= Roles.objects.filter(user=user, curso=c)
 
-    print(aux)
-
     # Tus Notas
     res = []
     for r in Resultado.objects.filter(evaluado=user):
@@ -73,10 +71,6 @@ def perfil(request):
         temp += r.a7 * r.coevaluacion.p7
         temp += r.a8 * r.coevaluacion.p8
         res.append([r.coevaluacion.inicio, r.coevaluacion.nombre, round(temp, 1), r.coevaluacion.curso])
-
-    def take_first(lista):
-        return lista[0]
-
     res.sort(reverse=True)
 
     # lista_coevs es la lista del nombre de todas las coevaluaciones sin repeticiones
@@ -84,7 +78,6 @@ def perfil(request):
     for i in range(len(res)):
         if res[i][1] not in lista_coevs:
             lista_coevs.append(res[i][1])
-    print(lista_coevs)
 
     # par_coevs_nota es una lista de cada coevaluacion sin repeticiones con las notas promediadas
     par_coevs_nota = []
@@ -95,9 +88,9 @@ def perfil(request):
             if r[1] == nombre_coev:
                 nota += r[2]
                 i += 1
+        i = max(1, i)
         nota = nota/i
         par_coevs_nota.append([nombre_coev, nota])
-    print(par_coevs_nota)
 
     # trip_notas es una lista de cada coevaluacion sin repeticiones con las notas promediadas y la fecha de inicio de cada coevaluacion
     trip_notas = []
@@ -107,11 +100,23 @@ def perfil(request):
         for b in res:
             if b[1] == a[0]:
                 a[2] = b[0]
-    print(trip_notas)
 
     # Return
     return render(request, "coevaluaciones/perfil-vista-dueno.html", {'user': user, 'aux': aux, 'notas': trip_notas})
 
+@login_required(login_url='/login')
+def cambiarContra(request):
+    userName = request.user
+    passOld = request.POST['passOld']
+    passNew = request.POST['passNew']
+    passNewConfirm = request.POST['passNewConfirm']
+    user = authenticate(username=userName, password=passOld)
+    if user is not None:
+        if passNew == passNewConfirm:
+            userName.set_password(passNew)
+            userName.save()
+            login(request, userName)
+    return HttpResponseRedirect('/perfil')
 
 MENSAJE={"error":" Ha ocurrido un error. \n No se ha agregado la Coevaluación \n Revisa que las ponderaciones sumen 1.",
          "exito":"Se ha agregado correctamente la Coevaluación.",
