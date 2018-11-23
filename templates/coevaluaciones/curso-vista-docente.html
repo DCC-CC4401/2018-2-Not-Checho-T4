@@ -155,213 +155,182 @@
             </button>
         </div>
     </div>
-    <div class="row">
-        <!-- Tabla de alumnos/as -->
-        <div class="col-md-4">
+    <!--    Tablas de grupos.   -->
+    <!--    2 tablas por fila.  -->
+    <div class="row mb-3">
+        <div class="col-md-6">
             <div class="table-wrap table-responsive my-1">
-                <table class="table table-alumnos-curso table-striped table-hover mb-0">
+                <table class="table table-sm table-striped table-hover mb-0">
                     <thead class="thead-light">
                     <tr>
-                        <th>
+                        <th class="th-titulo">
                             <div class="d-flex justify-content-between">
                                 Dynamic Duo
-                                <a href="#" class="small" title="Eliminar grupo"></a>
+                                <a href="#" title="Eliminar grupo">
+                                    <img class="clickable-icon x-icon" src="icon/x-icon.png"
+                                         alt="Eliminar" width="28" height="28">
+                                </a>
                             </div>
                         </th>
+                        <th>Tarea 1</th>
+                        <th>Tarea 2</th>
+                        <th>Tarea 3</th>
+                        <th>Tarea 4</th>
+                        <th>Tarea 5</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr id="active-estudiante" onclick="showGestionEstudiante()">
-                        <td>Estudiante 1 (clickeable)</td>
+                    <tr>
+                        <td>Batman</td>
+                        <td>5.4</td>
+                        <td>6.4</td>
+                        <td>5.0</td>
+                        <td>1.2</td>
+                        <td>2.6</td>
                     </tr>
                     <tr>
-                        <td>Estudiante 2</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 3</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 4</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 5</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 6</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 7</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 8</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 9</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 10</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 11</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 12</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 13</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 14</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 15</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 16</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 17</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 18</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 19</td>
-                    </tr>
-                    <tr>
-                        <td>Estudiante 20</td>
+                        <td>Robin</td>
+                        <td>6.5</td>
+                        <td>7.0</td>
+                        <td>7.0</td>
+                        <td>2.1</td>
+                        <td>3.1</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Tabla de grupos -->
-        <div class="col-md-4">
-            <h4 class="d-inline-block mt-1">Grupos</h4>
-            <button type="button" id="add-coev-btn" class="btn btn-primary-custom float-right">Agregar grupo</button>
-
+        <div class="col-md-6">
             <div class="table-wrap table-responsive my-1">
-                <table class="table table-grupos-curso table-striped table-hover mb-0">
+                <table class="table table-sm table-striped table-hover mb-0">
                     <thead class="thead-light">
                     <tr>
-                        <th>
-                            <form>
-                                <input class="form-control" type="search" placeholder="Buscar grupo..."
-                                       aria-label="Buscar alumno">
-                            </form>
+                        <th class="th-titulo">
+                            <div class="d-flex justify-content-between">
+                                La Pandilla
+                                <a href="#" title="Eliminar grupo">
+                                    <img class="clickable-icon x-icon" src="icon/x-icon.png"
+                                         alt="Eliminar" width="28" height="28">
+                                </a>
+                            </div>
                         </th>
+                        <th>Tarea 1</th>
+                        <th>Tarea 2</th>
+                        <th>Tarea 3</th>
+                        <th>Tarea 4</th>
+                        <th>Tarea 5</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr id="active-grupo" onclick="showGestionGrupo()">
-                        <td>1</td>
-                        <td>Nombre grupo 1 (clickeable)</td>
+                    <tr>
+                        <td>Scooby</td>
+                        <td>7.0</td>
+                        <td>7.0</td>
+                        <td>6.5</td>
+                        <td>5.9</td>
+                        <td>4.3</td>
                     </tr>
                     <tr>
-                        <td>2</td>
-                        <td>Nombre grupo 2</td>
+                        <td>Shaggy</td>
+                        <td>6.5</td>
+                        <td>6.0</td>
+                        <td>3.5</td>
+                        <td>2.8</td>
+                        <td>1.2</td>
                     </tr>
                     <tr>
-                        <td>3</td>
-                        <td>Nombre grupo 3</td>
+                        <td>Velma</td>
+                        <td>7.0</td>
+                        <td>7.0</td>
+                        <td>7.0</td>
+                        <td>7.0</td>
+                        <td>7.0</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!--    Segunda fila.   -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="table-wrap table-responsive my-1">
+                <table class="table table-sm table-striped table-hover mb-0">
+                    <thead class="thead-light">
+                    <tr>
+                        <th class="th-titulo">
+                            <div class="d-flex justify-content-between">
+                                X-Men
+                                <a href="#" title="Eliminar grupo">
+                                    <img class="clickable-icon x-icon" src="icon/x-icon.png"
+                                         alt="Eliminar" width="28" height="28">
+                                </a>
+                            </div>
+                        </th>
+                        <th>Tarea 1</th>
+                        <th>Tarea 2</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Cyclops</td>
+                        <td>7.0</td>
+                        <td>7.0</td>
                     </tr>
                     <tr>
-                        <td>4</td>
-                        <td>Nombre grupo 4</td>
+                        <td>Storm</td>
+                        <td>7.0</td>
+                        <td>7.0</td>
                     </tr>
                     <tr>
-                        <td>5</td>
-                        <td>Nombre grupo 5</td>
-                    </tr>
-                    <tr>
-                        <td>6</td>
-                        <td>Nombre grupo 6</td>
-                    </tr>
-                    <tr>
-                        <td>7</td>
-                        <td>Nombre grupo 7</td>
-                    </tr>
-                    <tr>
-                        <td>8</td>
-                        <td>Nombre grupo 8</td>
-                    </tr>
-                    <tr>
-                        <td>9</td>
-                        <td>Nombre grupo 9</td>
-                    </tr>
-                    <tr>
-                        <td>10</td>
-                        <td>Nombre grupo 10</td>
+                        <td>Jean Grey</td>
+                        <td>7.0</td>
+                        <td>7.0</td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Sección de control -->
-        <div class="col-md-4">
-            <div id="gestion-placeholder" class="mt-5">
-                <h5 class="font-weight-normal text-center text-muted">Selecciona un estudiante o grupo para
-                    gestionar</h5>
+        <div class="col-md-6">
+            <div class="table-wrap table-responsive my-1">
+                <table class="table table-sm table-striped table-hover mb-0">
+                    <thead class="thead-light">
+                    <tr>
+                        <th class="th-titulo">
+                            <div class="d-flex justify-content-between">
+                                Avengers
+                                <a href="#" title="Eliminar grupo">
+                                    <img class="clickable-icon x-icon" src="icon/x-icon.png"
+                                         alt="Eliminar" width="28" height="28">
+                                </a>
+                            </div>
+                        </th>
+                        <th>Tarea 1</th>
+                        <th>Tarea 2</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Cap. America</td>
+                        <td>7.0</td>
+                        <td>7.0</td>
+                    </tr>
+                    <tr>
+                        <td>Iron Man</td>
+                        <td>5.0</td>
+                        <td>5.5</td>
+                    </tr>
+                    <tr>
+                        <td>Hulk</td>
+                        <td>6.0</td>
+                        <td>6.0</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-            <!-- Gestión de estudiante -->
-            <div id="gestion-estudiante">
-                <h4 class="d-inline-block mt-1">Gestionar estudiante</h4>
-                <div class="gestionar-wrap my-1">
-                    <div class="gestionar-content">
-                        <h6 class="d-inline-block font-weight-bold">Estudiante 1</h6>
-                        <button type="button" class="btn btn-small btn-cancel float-right">Eliminar</button>
-                        <hr/>
-                        <div class="ml-2">
-                            <h6 class="mb-1 text-muted">Grupo:</h6>
-                            <p class="ml-2 d-inline-block">Nombre grupo 1</p>
-                            <button type="button" class="btn btn-small btn-secondary float-right">Gestionar grupo
-                            </button>
-                        </div>
-                        <div>
-                            <button type="button" class="btn btn-small btn-primary-custom">Cambiar grupo</button>
-                            <button type="button" class="btn btn-small btn-primary-custom">Ver perfil</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- FIN Gestión de estudiante -->
-
-            <!-- Gestión de grupo -->
-            <div id="gestion-grupo">
-                <h4 class="d-inline-block mt-1">Gestionar grupo</h4>
-                <div class="gestionar-wrap my-1">
-                    <div class="gestionar-content">
-                        <h6 class="d-inline-block font-weight-bold">Nombre grupo 1
-                            <a href="#" title="Editar nombre"><img class="clickable-icon mb-1" src="icon/edit-icon.png"
-                                                                   alt="Editar nombre" width="13" height="13"></a>
-                        </h6>
-                        <button type="button" class="btn btn-small btn-cancel float-right">Eliminar</button>
-                        <hr/>
-                        <div class="ml-2">
-                            <ul>
-                                <li>Estudiante 1
-                                    <a href="#" title="Quitar estudiante del grupo"><img
-                                            class="clickable-icon ml-1 mb-1" src="icon/x-icon.png"
-                                            alt="Quitar estudiante del grupo" width="13" height="13"></a></li>
-                                <li>Estudiante 2
-                                    <a href="#" title="Quitar estudiante del grupo"><img
-                                            class="clickable-icon ml-1 mb-1" src="icon/x-icon.png"
-                                            alt="Quitar estudiante del grupo" width="13" height="13"></a></li>
-                                <li>Estudiante 3
-                                    <a href="#" title="Quitar estudiante del grupo"><img
-                                            class="clickable-icon ml-1 mb-1" src="icon/x-icon.png"
-                                            alt="Quitar estudiante del grupo" width="13" height="13"></a></li>
-                                <li><a href="#">Agregar estudiante...</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- FIN Gestión de grupo -->
         </div>
-        <!-- FIN Sección de control -->
     </div>
 </div>
 
