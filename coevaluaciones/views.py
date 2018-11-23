@@ -13,7 +13,7 @@ def login_user(request):
     """ Inicia sesión para un usuario.  """
     logout(request)
     if request.POST:
-        username = request.POST['username'].replace('.', '').replace('-', '')
+        username = request.POST['username']
         password = request.POST['password']
 
         user = authenticate(username=username, password=password)
@@ -70,16 +70,53 @@ def perfil(request):
         temp += r.a6 * r.coevaluacion.p6
         temp += r.a7 * r.coevaluacion.p7
         temp += r.a8 * r.coevaluacion.p8
-        res.append([r.coevaluacion.inicio, r.coevaluacion.nombre, round(temp, 1)])
+        res.append([r.coevaluacion.inicio, r.coevaluacion.nombre, round(temp, 1), r.coevaluacion.curso])
+    res.sort(reverse=True)
 
-    def take_first(lista):
-        return lista[0]
+    # lista_coevs es la lista del nombre de todas las coevaluaciones sin repeticiones
+    lista_coevs = []
+    for i in range(len(res)):
+        if res[i][1] not in lista_coevs:
+            lista_coevs.append(res[i][1])
 
-    res.sort(key=take_first, reverse=True)
+    # par_coevs_nota es una lista de cada coevaluacion sin repeticiones con las notas promediadas
+    par_coevs_nota = []
+    for nombre_coev in lista_coevs:
+        i=0
+        nota = 0
+        for r in res:
+            if r[1] == nombre_coev:
+                nota += r[2]
+                i += 1
+        i = max(1, i)
+        nota = nota/i
+        par_coevs_nota.append([nombre_coev, nota])
+
+    # trip_notas es una lista de cada coevaluacion sin repeticiones con las notas promediadas y la fecha de inicio de cada coevaluacion
+    trip_notas = []
+    for i in range(len(par_coevs_nota)):
+        trip_notas.append([par_coevs_nota[i][0], par_coevs_nota[i][1], 0])
+    for a in trip_notas:
+        for b in res:
+            if b[1] == a[0]:
+                a[2] = b[0]
 
     # Return
-    return render(request, "coevaluaciones/perfil-vista-dueno.html", {'user': user, 'aux': aux, 'res': res})
+    return render(request, "coevaluaciones/perfil-vista-dueno.html", {'user': user, 'aux': aux, 'notas': trip_notas})
 
+@login_required(login_url='/login')
+def cambiarContra(request):
+    userName = request.user
+    passOld = request.POST['passOld']
+    passNew = request.POST['passNew']
+    passNewConfirm = request.POST['passNewConfirm']
+    user = authenticate(username=userName, password=passOld)
+    if user is not None:
+        if passNew == passNewConfirm:
+            userName.set_password(passNew)
+            userName.save()
+            login(request, userName)
+    return HttpResponseRedirect('/perfil')
 
 @login_required(login_url='/login')
 def ficha_curso(request, curso_id):

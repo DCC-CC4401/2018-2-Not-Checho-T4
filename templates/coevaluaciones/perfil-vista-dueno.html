@@ -56,7 +56,6 @@
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Correo Electrónico</h6>
                     <span>{{ user.email }}</span>
                     <button type="button" id="change-pass-btn" class="btn btn-secondary mt-3 d-block" onclick="changePass()">Cambiar contraseña</button>
-                    <span class="small">(clickeable)</span>
                 </div>
                 <!-- FIN Perfil -->
 
@@ -102,27 +101,30 @@
                 </div>
                 <!-- FIN Tabla de cursos -->
 
-                <!-- Tabla de notas -->
+                <!-- Tabla de contraseña -->
                 <div class="col-md-5">
                     <div id="cambiar-contrasena">
                         <h4 class="d-inline-block mt-1">Cambiar contraseña</h4>
-                        <form>
+                        <form action="../cambiarContra" method="Post">
+                            {% csrf_token %}
                             <div class="form-group">
                                 <label for="passOld">Ingrese su contraseña actual</label>
-                                <input type="password" class="form-control" id="passOld">
+                                <input type="password" class="form-control" id="passOld" name="passOld">
                             </div>
                             <div class="form-group">
                                 <label for="passNew">Ingrese su nueva contraseña</label>
-                                <input type="password" class="form-control" id="passNew">
+                                <input type="password" class="form-control" id="passNew" name="passNew">
                             </div>
                             <div class="form-group">
                                 <label for="passNewConfim">Confirme su nueva contraseña</label>
-                                <input type="password" class="form-control" id="passNewConfirm">
+                                <input type="password" class="form-control" id="passNewConfirm" name="passNewConfirm">
                             </div>
                             <button type="submit" class="btn btn-primary-custom">Confirmar</button>
                             <button type="button" class="btn btn-cancel" onclick="cancelPass()">Cancelar</button>
                         </form>
                     </div>
+
+                <!-- Tabla de notas -->
                     <div id="notas-placeholder" class="mt-5">
                         <h5 class="font-weight-normal text-center text-muted">Selecciona un curso para ver tus notas</h5>
                     </div>
@@ -143,21 +145,20 @@
 
                                 <!-- Cuerpo de tabla (Table Data) -->
                                 <tbody>
-                                {%  for t in res%}
+                                {% for n in notas %}
                                     <tr>
                                         <!-- Fecha de publicación -->
-                                        <td class="td-fecha">{{ t.0 }}</td>
+                                        <td class="td-fecha">{{ n.2 }}</td>
                                         <!-- Título de coevaluación -->
-                                        <td>{{ t.1 }}</td>
+                                        <td>{{ n.0 }}</td>
                                         <!-- Nota -->
-                                        <td class="td-nota">{{ t.2 }}</td>
+                                        {% if n.1 >= 4.0 %}
+                                            <td class="td-nota">{{ n.1 }}</td>
+                                        {% else %}
+                                            <td class="td-nota td-nota-roja">{{ n.1 }}</td>
+                                        {% endif %}
                                     </tr>
                                 {% endfor %}
-                                    <tr>
-                                        <td class="td-fecha">23:59 13/10/17</td>
-                                        <td>Tarea 3</td>
-                                        <td class="td-nota td-nota-roja">3.8</td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
