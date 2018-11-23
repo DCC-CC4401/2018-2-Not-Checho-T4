@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.utils import timezone
-
+from django.contrib import messages
 from coevaluaciones.models import Roles
 from .forms import AddResultadoForm
 from .models import Curso, Coevaluacion, Resultado, CoevEstud, Preguntas, Equipo, PersonaEquipo
@@ -113,8 +113,12 @@ def perfil(request):
     return render(request, "coevaluaciones/perfil-vista-dueno.html", {'user': user, 'aux': aux, 'notas': trip_notas})
 
 
+MENSAJE={"error":" Ha ocurrido un error. \n No se ha agregado la Coevaluación \n Revisa que las ponderaciones sumen 1.",
+         "exito":"Se ha agregado correctamente la Coevaluación.",
+         " ":""}
+
 @login_required(login_url='/login')
-def ficha_curso(request, curso_id):
+def ficha_curso(request, curso_id,mensaje=" "):
     user = request.user
     curso = Curso.objects.get(id=curso_id)
     roli = Roles.objects.get(user=user, curso=curso)
@@ -128,7 +132,7 @@ def ficha_curso(request, curso_id):
         return render(request, "coevaluaciones/curso-vista-alumno.html",
                       {'user': user, 'curso': curso, 'usercoev': queryset})
     elif roli.rol == "Profesor" or roli.rol == "Auxiliar" or roli.rol == "Ayudante":
-        return render(request, "coevaluaciones/curso-vista-docente.html",{'user': user,'rol':roli.rol,
+        return render(request, "coevaluaciones/curso-vista-docente.html",{'user': user,'rol':roli.rol,'mensaje':MENSAJE[mensaje],
                                                                           'curso': curso,'coevaluaciones':coevs})
     else:
         return redirect('')
@@ -176,8 +180,6 @@ def ficha_coevaluacion(request, coev_id):
 
 @login_required(login_url='/login')
 def subir_coevaluacion(request, coev_id):
-    # user = request.user
-    # coev = Coevaluacion.objects.get(id=coev_id)
     if request.method == 'POST':
         form = AddResultadoForm(request.POST)
         if form.is_valid():
@@ -202,9 +204,7 @@ def agregar_coevaluacion(request, curso_id):
         p_p8 = request.POST['p_p8']
         sum = float(p_p1) + float(p_p2) + float(p_p3) + float(p_p4) + float(p_p5) +float(p_p6)+float(p_p7)+float(p_p8)
         if sum != 1.0:
-            print('error')
-            #mensaje de error y retornar
-            #return redirect('ficha_curso',curso_id)
+            return redirect('ficha_curso',curso_id,"error")
         nueva_coevaluacion = Coevaluacion(nombre=nombre,
                                           curso=curso,
                                           inicio=inicio,
@@ -226,7 +226,7 @@ def agregar_coevaluacion(request, curso_id):
             n_coevestud = CoevEstud(user=p.user,coevaluacion=nueva_coevaluacion,equipo=p.equipo,estado="Pendiente",
                                     r1=None, r2=None,r3=None,r4=None,r5=None,r6=None,r7=None,r8=None)
             n_coevestud.save()
-    return redirect('ficha_curso',curso_id)
+    return redirect('ficha_curso',curso_id,"exito")
 
 
 def actualizar_coevaluacion(coevaluacion):

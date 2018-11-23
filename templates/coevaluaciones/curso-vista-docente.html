@@ -67,6 +67,20 @@
                        {{ curso.codigo }}-{{ curso.seccion }} {{ curso.nombre }} {{ curso.anho }}-{{ curso.semestre }}
             </h5>
             <hr/>
+            <input type="hidden" id="mensaje" name="alert" value="{{ mensaje }}">
+            <script>
+                var m = document.getElementById("mensaje").value;
+                if(m!=""){
+                    $(document).ready(function () {
+                    alert(m);
+                    window.location.href = '/ficha_curso/{{ curso.id }}';
+                })
+                }
+
+            </script>
+
+
+
             <!-- Tablas de resumen -->
             <div class="row">
                 <!-- Tabla de coevaluaciones -->
