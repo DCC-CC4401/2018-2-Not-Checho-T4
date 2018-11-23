@@ -102,21 +102,21 @@ class CoevEstud(models.Model):
     coevaluacion = models.ForeignKey(Coevaluacion, on_delete=models.CASCADE)
     equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE)
     estado = models.CharField(max_length=30)
-    r1 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+    r1 = models.DecimalField(null=True, default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
                              decimal_places=3)
-    r2 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+    r2 = models.DecimalField(null=True,default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
                              decimal_places=3)
-    r3 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+    r3 = models.DecimalField(null=True,default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
                              decimal_places=3)
-    r4 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+    r4 = models.DecimalField(null=True,default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
                              decimal_places=3)
-    r5 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+    r5 = models.DecimalField(null=True,default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
                              decimal_places=3)
-    r6 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+    r6 = models.DecimalField(null=True,default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
                              decimal_places=3)
-    r7 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+    r7 = models.DecimalField(null=True,default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
                              decimal_places=3)
-    r8 = models.DecimalField(default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
+    r8 = models.DecimalField(null=True,default=None, validators=[MinValueValidator(1), MaxValueValidator(7)], max_digits=5,
                              decimal_places=3)
 
     def __str__(self):

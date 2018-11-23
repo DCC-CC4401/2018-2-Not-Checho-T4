@@ -6,7 +6,7 @@ from django.utils import timezone
 
 from coevaluaciones.models import Roles
 from .forms import AddResultadoForm
-from .models import Curso, Coevaluacion, Resultado, CoevEstud, Preguntas
+from .models import Curso, Coevaluacion, Resultado, CoevEstud, Preguntas, Equipo, PersonaEquipo
 
 
 def login_user(request):
@@ -128,8 +128,7 @@ def ficha_curso(request, curso_id):
         return render(request, "coevaluaciones/curso-vista-alumno.html",
                       {'user': user, 'curso': curso, 'usercoev': queryset})
     elif roli.rol == "Profesor" or roli.rol == "Auxiliar" or roli.rol == "Ayudante":
-        form = AddCoevaluacionForm()
-        return render(request, "coevaluaciones/curso-vista-docente.html",{'user': user,'rol':roli.rol,'coev_form':form,
+        return render(request, "coevaluaciones/curso-vista-docente.html",{'user': user,'rol':roli.rol,
                                                                           'curso': curso,'coevaluaciones':coevs})
     else:
         return redirect('')
@@ -221,7 +220,12 @@ def agregar_coevaluacion(request, curso_id):
                                           p8=float(p_p8))
         nueva_coevaluacion.save()
         #agregar los coevestud para todos los estudiantes con sus grupos correspondientes
-
+        equipos = Equipo.objects.filter(curso=curso)
+        personas = PersonaEquipo.objects.filter(equipo__in=equipos,estado=True)
+        for p in personas:
+            n_coevestud = CoevEstud(user=p.user,coevaluacion=nueva_coevaluacion,equipo=p.equipo,estado="Pendiente",
+                                    r1=None, r2=None,r3=None,r4=None,r5=None,r6=None,r7=None,r8=None)
+            n_coevestud.save()
     return redirect('ficha_curso',curso_id)
 
 
