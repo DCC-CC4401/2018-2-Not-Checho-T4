@@ -118,7 +118,8 @@ def cambiarContra(request):
             login(request, userName)
     return HttpResponseRedirect('/perfil')
 
-MENSAJE={"error":" Ha ocurrido un error. \n No se ha agregado la Coevaluación \n Revisa que las ponderaciones sumen 1.",
+
+MENSAJE = {"error":" Ha ocurrido un error. \n No se ha agregado la Coevaluación \n Revisa que las ponderaciones sumen 1.",
          "exito":"Se ha agregado correctamente la Coevaluación.",
          " ":""}
 
