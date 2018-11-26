@@ -1,6 +1,7 @@
 from django import forms
 from .models import Curso, Equipo, Roles, PersonaEquipo, Preguntas, Coevaluacion, Resultado, CoevEstud
 from django.contrib.auth.models import User
+from django.contrib.admin.widgets import AdminDateWidget
 
 
 NOTAS_A_ELEGIR = [(1,'1'),(2,'2'),(3,'3'),(4,'4'),(5,'5'),(6,'6'),(7,'7')]
@@ -13,6 +14,10 @@ PREGUNTAS = ["¿Demuestra compromiso con el proyecto?",
              "¿Ofrece apoyo en las tareas que van más allá del rol asignado?",
              "¿Es capaz de admitir sus equivocaciones y recibir críticas?",
              "Fortalezas","Debilidades","Comentario"]
+
+"""
+Formulario para que un alumno responda una coevaluacion.
+"""
 class AddResultadoForm(forms.Form):
     usuario_id = forms.IntegerField(widget=forms.HiddenInput())
     evaluado_id = forms.IntegerField(widget=forms.HiddenInput())
@@ -47,6 +52,7 @@ class AddResultadoForm(forms.Form):
 
         r = Resultado.objects.filter(coevaluacion=c, evaluador=u,evaluado=e).first()
         if r is None:
+            # crea un nuevo resultado
             resultado = Resultado(coevaluacion=c, evaluador=u, evaluado=e,
                                   a1=self.cleaned_data['a1'],
                                   a2=self.cleaned_data['a2'],
@@ -62,6 +68,7 @@ class AddResultadoForm(forms.Form):
 
             resultado.save()
         else:
+            # actualiza los resultados
             r.a1 = self.cleaned_data['a1']
             r.a2 = self.cleaned_data['a2']
             r.a3 = self.cleaned_data['a3']
@@ -74,5 +81,32 @@ class AddResultadoForm(forms.Form):
             r.a10 = self.cleaned_data['a10']
             r.a11 = self.cleaned_data['a11']
             r.save()
-
-
+        # Cambia el resultado del evaluado
+        ce = CoevEstud.objects.get(user=e,coevaluacion=c)
+        set_r = Resultado.objects.filter(coevaluacion=c, evaluado=e)
+        r1 = 0
+        r2 = 0
+        r3 = 0
+        r4 = 0
+        r5 = 0
+        r6 = 0
+        r7 = 0
+        r8 = 0
+        for i in set_r:
+            r1 += i.a1
+            r2 += i.a2
+            r3 += i.a3
+            r4 += i.a4
+            r5 += i.a5
+            r6 += i.a6
+            r7 += i.a7
+            r8 += i.a8
+        ce.r1 = r1 / len(set_r)
+        ce.r2 = r2 / len(set_r)
+        ce.r3 = r3 / len(set_r)
+        ce.r4 = r4 / len(set_r)
+        ce.r5 = r5 / len(set_r)
+        ce.r6 = r6 / len(set_r)
+        ce.r7 = r7 / len(set_r)
+        ce.r8 = r8 / len(set_r)
+        ce.save()
