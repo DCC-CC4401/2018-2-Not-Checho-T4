@@ -21,30 +21,7 @@
 </head>
 <body>
 <!-- Barra superior -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
-    <a class="navbar-brand" href="#">Sistema de Coevaluaciones DCC</a>
-    <!-- Al achicar la pantalla, el menú se oculta y se vuelve desplegable mediante este botón. -->
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon">
-                    <i class="fa fa-navicon"></i>
-                </span>
-    </button>
-
-    <!-- Menú superior-derecha -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ml-auto">
-            <li class="divider-vertical"></li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">{{ user.first_name }} {{ user.last_name }}</a>
-            </li>
-            <li class="divider-vertical"></li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Cerrar Sesión</a>
-            </li>
-        </ul>
-    </div>
-</nav>
+{% include "coevaluaciones/barra_superior.html" %}
 <!-- FIN Barra superior -->
 
 <!-- Cuerpo -->
@@ -124,39 +101,39 @@
         <!-- FIN Tabla de alumnos que no han respondido -->
     </div>
     {% if coevaluacion.estado == "Abierta" %}
-    <h4 class="d-inline-block mt-1 mb-0">Responder coevaluación</h4>
-    <hr/>
-    <!-- Detalle de coevaluación contestada -->
-    <div id="responder-coeval" class="row">
-        <div class="col-10 offset-1" id="accordion">
-            {% for u in contestadas %}
-                <div class="collapse" id="collapse{{ u.0.id }}" data-parent="#accordion">
-                    <h5 class="font-italic d-inline-block">Estas respondiendo para:</h5>
-                    <h4 class="font-weight-bold d-inline-block ml-1">{{ u.0.first_name }} {{ u.0.last_name }}</h4>
-                    <form action="{% url 'subir_coevaluacion' coevaluacion.id %}" method="post">
-                        {% csrf_token %}
-                        <ol>
-                            {% for field in eval_form.visible_fields %}
-                                <div class="form-group criterio-coeval">
-                                    <li class="h5">
-                                        <label for="{{ field.label }}">
-                                            {{ field.label }}:
-                                        </label>
-                                    </li>
-                                    {{ field }}
-                                </div>
-                            {% endfor %}
-                            <input type="hidden" name="usuario_id" value="{{ user.id }}">
-                            <input type="hidden" name="evaluado_id" value="{{ u.0.id }}">
-                            <input type="hidden" name="coevaluacion_id" value="{{ coevaluacion.id }}">
-                        </ol>
-                        <button type="submit" class="btn btn-primary-custom">Enviar coevaluación</button>
-                    </form>
-                </div>
-                <br/>
-            {% endfor %}
+        <h4 class="d-inline-block mt-1 mb-0">Responder coevaluación</h4>
+        <hr/>
+        <!-- Detalle de coevaluación contestada -->
+        <div id="responder-coeval" class="row">
+            <div class="col-10 offset-1" id="accordion">
+                {% for u in contestadas %}
+                    <div class="collapse" id="collapse{{ u.0.id }}" data-parent="#accordion">
+                        <h5 class="font-italic d-inline-block">Estas respondiendo para:</h5>
+                        <h4 class="font-weight-bold d-inline-block ml-1">{{ u.0.first_name }} {{ u.0.last_name }}</h4>
+                        <form action="{% url 'subir_coevaluacion' coevaluacion.id %}" method="post">
+                            {% csrf_token %}
+                            <ol>
+                                {% for field in eval_form.visible_fields %}
+                                    <div class="form-group criterio-coeval">
+                                        <li class="h5">
+                                            <label for="{{ field.label }}">
+                                                {{ field.label }}:
+                                            </label>
+                                        </li>
+                                        {{ field }}
+                                    </div>
+                                {% endfor %}
+                                <input type="hidden" name="usuario_id" value="{{ user.id }}">
+                                <input type="hidden" name="evaluado_id" value="{{ u.0.id }}">
+                                <input type="hidden" name="coevaluacion_id" value="{{ coevaluacion.id }}">
+                            </ol>
+                            <button type="submit" class="btn btn-primary-custom">Enviar coevaluación</button>
+                        </form>
+                    </div>
+                    <br/>
+                {% endfor %}
+            </div>
         </div>
-    </div>
     {% endif %}
 
 

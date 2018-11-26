@@ -1,170 +1,150 @@
 {% load static %}
 <!DOCTYPE html>
-    <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
-        <link rel="stylesheet" href="{% static 'css/coeval.css' %}"/>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
-        <script src="{% static 'js/coeval.js' %}"></script>
-        <title>{{ user.first_name }} {{ user.last_name }} - Sistema de Coevaluaciones DCC</title>
-    </head>
-    <body>
-        <!-- Barra superior -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
-            <a class="navbar-brand" href="#">Sistema de Coevaluaciones DCC</a>
-            <!-- Al achicar la pantalla, el menú se oculta y se vuelve desplegable mediante este botón. -->
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon">
-                    <i class="fa fa-navicon"></i>
-                </span>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/coeval.css' %}"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/coeval.js' %}"></script>
+    <title>{{ user.first_name }} {{ user.last_name }} - Sistema de Coevaluaciones DCC</title>
+</head>
+<body>
+<!-- Barra superior -->
+{% include "coevaluaciones/barra_superior.html" %}
+<!-- FIN Barra superior -->
+
+<!-- Cuerpo -->
+<div class="container"> <!-- Contenedor responsivo, se adapta a la pantalla con puntos de quiebre. -->
+
+    <h3 class="d-inline-block page-title">Ficha de Alumno/a</h3>
+    <hr/>
+    <!-- Contenido -->
+    <div class="row">
+
+        <!-- Perfil -->
+        <div class="col-md-3 mb-3">
+            <h4 class="d-inline-block mt-1">Tu Perfil</h4>
+            <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Nombre</h6>
+            <span>{{ user.first_name }} {{ user.last_name }}</span>
+            <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">RUT</h6>
+            <span>{{ user }}</span>
+            <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Correo Electrónico</h6>
+            <span>{{ user.email }}</span>
+            <button type="button" id="change-pass-btn" class="btn btn-secondary mt-3 d-block" onclick="changePass()">
+                Cambiar contraseña
             </button>
+        </div>
+        <!-- FIN Perfil -->
 
-            <!-- Menú superior-derecha -->
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav ml-auto">
-                    <li class="divider-vertical"></li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">{{ user.first_name }} {{ user.last_name }}</a>
-                    </li>
-                    <li class="divider-vertical"></li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Cerrar Sesión</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <!-- FIN Barra superior -->
-
-        <!-- Cuerpo -->
-        <div class="container"> <!-- Contenedor responsivo, se adapta a la pantalla con puntos de quiebre. -->
-
-            <h3 class="d-inline-block page-title">Ficha de Alumno/a</h3>
-            <hr/>
-            <!-- Contenido -->
-            <div class="row">
-
-                <!-- Perfil -->
-                <div class="col-md-3 mb-3">
-                    <h4 class="d-inline-block mt-1">Tu Perfil</h4>
-                    <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Nombre</h6>
-                    <span>{{ user.first_name }} {{ user.last_name }}</span>
-                    <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">RUT</h6>
-                    <span>{{ user }}</span>
-                    <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Correo Electrónico</h6>
-                    <span>{{ user.email }}</span>
-                    <button type="button" id="change-pass-btn" class="btn btn-secondary mt-3 d-block" onclick="changePass()">Cambiar contraseña</button>
-                </div>
-                <!-- FIN Perfil -->
-
-                <!-- Tabla de cursos -->
-                <div class="col-md-4 mb-3">
-                    <h4 class="d-inline-block mt-1">Tus Cursos</h4>
-                    <div class="table-wrap table-responsive my-1">
-                        <table class="table table-cursos-perfil table-striped table-hover mb-0">
-                            <!-- Encabezados de tabla (Table Headers) -->
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>Curso</th>
-                                    <th class="th-semestre">Sem</th>
-                                </tr>
-                            </thead>
-                            <!-- Cuerpo de tabla (Table Data) -->
-                            <tbody>
-                                {% for a in aux %}
-                                    <tr id="row-btn" onclick="showNotas()">
-                                        <td class="td-curso-full">
-                                            {% if a.rol == "Alumno" %}
-                                                <div class="cargos cargos-alumno tooltip-custom">
-                                            {% endif %}
-                                            {% if a.rol == "Auxiliar" %}
-                                                <div class="cargos cargos-auxiliar tooltip-custom">
-                                            {% endif %}
-                                            {% if a.rol == "Profesor" %}
-                                                <div class="cargos cargos-profesor tooltip-custom">
-                                            {% endif %}
-                                    <span class="tooltiptext"></span>
-                                        </div>
-                                        <span class="curso-nombre">{{ a.curso.nombre }}
+        <!-- Tabla de cursos -->
+        <div class="col-md-4 mb-3">
+            <h4 class="d-inline-block mt-1">Tus Cursos</h4>
+            <div class="table-wrap table-responsive my-1">
+                <table class="table table-cursos-perfil table-striped table-hover mb-0">
+                    <!-- Encabezados de tabla (Table Headers) -->
+                    <thead class="thead-light">
+                    <tr>
+                        <th>Curso</th>
+                        <th class="th-semestre">Sem</th>
+                    </tr>
+                    </thead>
+                    <!-- Cuerpo de tabla (Table Data) -->
+                    <tbody>
+                    {% for a in aux %}
+                        <tr id="row-btn" onclick="showNotas()">
+                            <td class="td-curso-full">
+                                {% if a.rol == "Alumno" %}
+                                    <div class="cargos cargos-alumno tooltip-custom">
+                                {% endif %}
+                                {% if a.rol == "Auxiliar" %}
+                                    <div class="cargos cargos-auxiliar tooltip-custom">
+                                {% endif %}
+                                {% if a.rol == "Profesor" %}
+                                    <div class="cargos cargos-profesor tooltip-custom">
+                                {% endif %}
+                                <span class="tooltiptext"></span>
+                                </div>
+                                <span class="curso-nombre">{{ a.curso.nombre }}
                                             </span>
-                                        <br>
-                                        <span class="curso-codigo">{{ a.curso.codigo }}-{{ a.curso.seccion }}</span>
-                                    </td>
-                                    <td>{{ a.curso.anho }}-{{ a.curso.semestre }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <!-- FIN Tabla de cursos -->
+                                <br>
+                                <span class="curso-codigo">{{ a.curso.codigo }}-{{ a.curso.seccion }}</span>
+                            </td>
+                            <td>{{ a.curso.anho }}-{{ a.curso.semestre }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- FIN Tabla de cursos -->
 
-                <!-- Tabla de contraseña -->
-                <div class="col-md-5">
-                    <div id="cambiar-contrasena">
-                        <h4 class="d-inline-block mt-1">Cambiar contraseña</h4>
-                        <form action="../cambiarContra" method="Post">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="passOld">Ingrese su contraseña actual</label>
-                                <input type="password" class="form-control" id="passOld" name="passOld">
-                            </div>
-                            <div class="form-group">
-                                <label for="passNew">Ingrese su nueva contraseña</label>
-                                <input type="password" class="form-control" id="passNew" name="passNew">
-                            </div>
-                            <div class="form-group">
-                                <label for="passNewConfim">Confirme su nueva contraseña</label>
-                                <input type="password" class="form-control" id="passNewConfirm" name="passNewConfirm">
-                            </div>
-                            <button type="submit" class="btn btn-primary-custom">Confirmar</button>
-                            <button type="button" class="btn btn-cancel" onclick="cancelPass()">Cancelar</button>
-                        </form>
+        <!-- Tabla de contraseña -->
+        <div class="col-md-5">
+            <div id="cambiar-contrasena">
+                <h4 class="d-inline-block mt-1">Cambiar contraseña</h4>
+                <form action="../cambiarContra" method="Post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="passOld">Ingrese su contraseña actual</label>
+                        <input type="password" class="form-control" id="passOld" name="passOld">
                     </div>
-
-                <!-- Tabla de notas -->
-                    <div id="notas-placeholder" class="mt-5">
-                        <h5 class="font-weight-normal text-center text-muted">Selecciona un curso para ver tus notas</h5>
+                    <div class="form-group">
+                        <label for="passNew">Ingrese su nueva contraseña</label>
+                        <input type="password" class="form-control" id="passNew" name="passNew">
                     </div>
-                    <div id="notas-resumen">
-                        <h4 class="d-inline-block mt-1">Tus Notas</h4>
-                        <h5 class="float-right mb-0 mt-2 text-muted" id="currentCurso">CCXXXX-1, 20XX-2</h5>
-
-                        <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
-                            <table class="table table-notas-perfil table-striped table-hover mb-0"> <!-- Tabla -->
-                                <!-- Encabezados de tabla (Table Headers) -->
-                                <thead class="thead-light">
-                                    <tr> <!-- Fila (Table Row) -->
-                                        <th class="th-fecha">Publicada</th>
-                                        <th class="th-titulo">Título</th>
-                                        <th class="th-nota">Nota</th>
-                                    </tr>
-                                </thead>
-
-                                <!-- Cuerpo de tabla (Table Data) -->
-                                <tbody>
-                                {% for n in notas %}
-                                    <tr>
-                                        <!-- Fecha de publicación -->
-                                        <td class="td-fecha">{{ n.2 }}</td>
-                                        <!-- Título de coevaluación -->
-                                        <td>{{ n.0 }}</td>
-                                        <!-- Nota -->
-                                        {% if n.1 >= 4.0 %}
-                                            <td class="td-nota">{{ n.1 }}</td>
-                                        {% else %}
-                                            <td class="td-nota td-nota-roja">{{ n.1 }}</td>
-                                        {% endif %}
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="form-group">
+                        <label for="passNewConfim">Confirme su nueva contraseña</label>
+                        <input type="password" class="form-control" id="passNewConfirm" name="passNewConfirm">
                     </div>
+                    <button type="submit" class="btn btn-primary-custom">Confirmar</button>
+                    <button type="button" class="btn btn-cancel" onclick="cancelPass()">Cancelar</button>
+                </form>
+            </div>
+
+            <!-- Tabla de notas -->
+            <div id="notas-placeholder" class="mt-5">
+                <h5 class="font-weight-normal text-center text-muted">Selecciona un curso para ver tus notas</h5>
+            </div>
+            <div id="notas-resumen">
+                <h4 class="d-inline-block mt-1">Tus Notas</h4>
+                <h5 class="float-right mb-0 mt-2 text-muted" id="currentCurso">CCXXXX-1, 20XX-2</h5>
+
+                <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
+                    <table class="table table-notas-perfil table-striped table-hover mb-0"> <!-- Tabla -->
+                        <!-- Encabezados de tabla (Table Headers) -->
+                        <thead class="thead-light">
+                        <tr> <!-- Fila (Table Row) -->
+                            <th class="th-fecha">Publicada</th>
+                            <th class="th-titulo">Título</th>
+                            <th class="th-nota">Nota</th>
+                        </tr>
+                        </thead>
+
+                        <!-- Cuerpo de tabla (Table Data) -->
+                        <tbody>
+                        {% for n in notas %}
+                            <tr>
+                                <!-- Fecha de publicación -->
+                                <td class="td-fecha">{{ n.2 }}</td>
+                                <!-- Título de coevaluación -->
+                                <td>{{ n.0 }}</td>
+                                <!-- Nota -->
+                                {% if n.1 >= 4.0 %}
+                                    <td class="td-nota">{{ n.1 }}</td>
+                                {% else %}
+                                    <td class="td-nota td-nota-roja">{{ n.1 }}</td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </body>
-    </html>
+    </div>
+</div>
+</body>
+</html>

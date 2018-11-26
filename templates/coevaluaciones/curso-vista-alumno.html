@@ -10,11 +10,11 @@
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/coeval.js' %}"></script>
     <script>
-        $(document).ready(function() {
-            $('tr').click(function() {
+        $(document).ready(function () {
+            $('tr').click(function () {
                 var action = $(this).find("form").attr("action");
-                if(action) {
-                    window.location=action;
+                if (action) {
+                    window.location = action;
                 }
             });
         });
@@ -23,29 +23,7 @@
 </head>
 <body>
 <!-- Barra superior -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
-    <a class="navbar-brand" href="#">Sistema de Coevaluaciones DCC</a>
-    <!-- Al achicar la pantalla, el menú se oculta y se vuelve desplegable mediante este botón. -->
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon">
-                    <i class="fa fa-navicon"></i>
-                </span>
-    </button>
-
-    <!-- Menú superior-derecha -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ml-auto">
-            <li class="divider-vertical"></li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">{{ user.first_name }} {{ user.last_name }}</a>
-            </li>
-            <li class="divider-vertical"></li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Cerrar Sesión</a>
-            </li>
-        </ul>
-    </div>
-</nav>
+{% include "coevaluaciones/barra_superior.html" %}
 <!-- FIN Barra superior -->
 
 <!-- Cuerpo -->
@@ -100,18 +78,20 @@
                         </td>
                         <!-- Estado -->
                         <td>
-                        {% if c.coevaluacion.estado == "Abierta" %}
-                            {{ c.estado }}
-                        {% else %}
-                            {{ c.coevaluacion.estado }}
-                        {% endif %}</td>
+                            {% if c.coevaluacion.estado == "Abierta" %}
+                                {{ c.estado }}
+                            {% else %}
+                                {{ c.coevaluacion.estado }}
+                            {% endif %}</td>
                         <!-- Ícono de acción (responder) -->
 
                         <td class="td-icon">
                             {% if c.estado == "Pendiente" %}
                                 <form action="{% url 'ficha_coevaluacion' c.coevaluacion.id %}" method="post">
                                     {% csrf_token %}
-                                    <input type="image" class="clickable-icon answer-icon wiggle" src="/static/icon/answer-icon.png" alt="Responder coevaluación" width="28" height="28">
+                                    <input type="image" class="clickable-icon answer-icon wiggle"
+                                           src="/static/icon/answer-icon.png" alt="Responder coevaluación" width="28"
+                                           height="28">
                                 </form>
                             {% endif %}
                         </td>
