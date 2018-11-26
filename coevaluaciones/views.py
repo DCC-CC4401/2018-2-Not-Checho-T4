@@ -52,57 +52,21 @@ def perfil(request):
     user = request.user
 
     # Tus Cursos
-    aux = Roles.objects.none()
+    cursos = Roles.objects.none()
     for c in Curso.objects.filter().order_by('-anho', '-semestre'):
         for r in Roles.objects.filter(user=user):
             if r.curso == c:
-                aux |= Roles.objects.filter(user=user, curso=c)
+                cursos |= Roles.objects.filter(user=user, curso=c)
 
     # Tus Notas
-    res = []
-    for r in Resultado.objects.filter(evaluado=user):
-        temp = 0
-        temp += r.a1 * r.coevaluacion.p1
-        temp += r.a2 * r.coevaluacion.p2
-        temp += r.a3 * r.coevaluacion.p3
-        temp += r.a4 * r.coevaluacion.p4
-        temp += r.a5 * r.coevaluacion.p5
-        temp += r.a6 * r.coevaluacion.p6
-        temp += r.a7 * r.coevaluacion.p7
-        temp += r.a8 * r.coevaluacion.p8
-        res.append([r.coevaluacion.inicio, r.coevaluacion.nombre, round(temp, 1), r.coevaluacion.curso])
-    res.sort(reverse=True)
-
-    # lista_coevs es la lista del nombre de todas las coevaluaciones sin repeticiones
-    lista_coevs = []
-    for i in range(len(res)):
-        if res[i][1] not in lista_coevs:
-            lista_coevs.append(res[i][1])
-
-    # par_coevs_nota es una lista de cada coevaluacion sin repeticiones con las notas promediadas
-    par_coevs_nota = []
-    for nombre_coev in lista_coevs:
-        i=0
-        nota = 0
-        for r in res:
-            if r[1] == nombre_coev:
-                nota += r[2]
-                i += 1
-        i = max(1, i)
-        nota = nota/i
-        par_coevs_nota.append([nombre_coev, nota])
-
-    # trip_notas es una lista de cada coevaluacion sin repeticiones con las notas promediadas y la fecha de inicio de cada coevaluacion
-    trip_notas = []
-    for i in range(len(par_coevs_nota)):
-        trip_notas.append([par_coevs_nota[i][0], par_coevs_nota[i][1], 0])
-    for a in trip_notas:
-        for b in res:
-            if b[1] == a[0]:
-                a[2] = b[0]
+    notas = []
+    for c in CoevEstud.objects.filter(user=user):
+        temp = (c.r1 + c.r2 + c.r3 + c.r4 + c.r5 + c.r6 + c.r7 + c.r8)/8
+        notas.append([c.coevaluacion.inicio, c.coevaluacion.nombre, round(temp, 1)])
+    notas.sort(reverse=True)
 
     # Return
-    return render(request, "coevaluaciones/perfil-vista-dueno.html", {'user': user, 'aux': aux, 'notas': trip_notas})
+    return render(request, "coevaluaciones/perfil-vista-dueno.html", {'user': user, 'cursos': cursos, 'notas': notas})
 
 @login_required(login_url='/login')
 def cambiarContra(request):
