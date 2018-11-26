@@ -32,7 +32,7 @@
     <h3 class="d-inline-block page-title">Ficha de Curso</h3>
     <h5 class="mb-3">
         <div class="cargos cargos-alumno"></div>
-        {{ curso.codigo }}-{{ curso.seccion }} {{ curso.nombre }} {{ curso.anho }}, semestre {{ curso.semestre }}
+        {{ curso.codigo }}-{{ curso.seccion }} {{ curso.nombre }} {{ curso.anho }}-{{ curso.semestre }}
     </h5>
     <hr/>
     <!-- Tablas de resumen -->
@@ -66,7 +66,7 @@
                         {% csrf_token %}
                         <!-- Fecha de inicio -->
                         <td class="td-fecha">
-                            {{ c.coevaluacion.inicio }}
+                            {{ c.coevaluacion.inicio|date:'H:i d/m/y' }}
                         </td>
                         <!-- Título de coevaluación -->
                         <td>
@@ -74,7 +74,7 @@
                         </td>
                         <!-- Fecha de término -->
                         <td class="td-fecha">
-                            {{ c.coevaluacion.fin }}
+                            {{ c.coevaluacion.fin|date:'H:i d/m/y' }}
                         </td>
                         <!-- Estado -->
                         <td>

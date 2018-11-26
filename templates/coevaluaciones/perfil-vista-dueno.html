@@ -53,7 +53,7 @@
                     </thead>
                     <!-- Cuerpo de tabla (Table Data) -->
                     <tbody>
-                    {% for a in aux %}
+                    {% for a in cursos %}
                         <tr id="row-btn" onclick="showNotas()">
                             <td class="td-curso-full">
                                 {% if a.rol == "Alumno" %}
@@ -128,14 +128,14 @@
                         {% for n in notas %}
                             <tr>
                                 <!-- Fecha de publicación -->
-                                <td class="td-fecha">{{ n.2 }}</td>
+                                <td class="td-fecha">{{ n.0 }}</td>
                                 <!-- Título de coevaluación -->
-                                <td>{{ n.0 }}</td>
+                                <td>{{ n.1 }}</td>
                                 <!-- Nota -->
-                                {% if n.1 >= 4.0 %}
-                                    <td class="td-nota">{{ n.1 }}</td>
+                                {% if n.2 >= 4.0 %}
+                                    <td class="td-nota">{{ n.2 }}</td>
                                 {% else %}
-                                    <td class="td-nota td-nota-roja">{{ n.1 }}</td>
+                                    <td class="td-nota td-nota-roja">{{ n.2 }}</td>
                                 {% endif %}
                             </tr>
                         {% endfor %}

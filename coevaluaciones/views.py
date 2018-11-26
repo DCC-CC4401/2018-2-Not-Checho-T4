@@ -3,10 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.utils import timezone
-
+from django.contrib import messages
 from coevaluaciones.models import Roles
 from .forms import AddResultadoForm
-from .models import Curso, Coevaluacion, Resultado, CoevEstud
+from .models import Curso, Coevaluacion, Resultado, CoevEstud, Preguntas, Equipo, PersonaEquipo
 
 
 def login_user(request):
@@ -52,57 +52,21 @@ def perfil(request):
     user = request.user
 
     # Tus Cursos
-    aux = Roles.objects.none()
+    cursos = Roles.objects.none()
     for c in Curso.objects.filter().order_by('-anho', '-semestre'):
         for r in Roles.objects.filter(user=user):
             if r.curso == c:
-                aux |= Roles.objects.filter(user=user, curso=c)
+                cursos |= Roles.objects.filter(user=user, curso=c)
 
     # Tus Notas
-    res = []
-    for r in Resultado.objects.filter(evaluado=user):
-        temp = 0
-        temp += r.a1 * r.coevaluacion.p1
-        temp += r.a2 * r.coevaluacion.p2
-        temp += r.a3 * r.coevaluacion.p3
-        temp += r.a4 * r.coevaluacion.p4
-        temp += r.a5 * r.coevaluacion.p5
-        temp += r.a6 * r.coevaluacion.p6
-        temp += r.a7 * r.coevaluacion.p7
-        temp += r.a8 * r.coevaluacion.p8
-        res.append([r.coevaluacion.inicio, r.coevaluacion.nombre, round(temp, 1), r.coevaluacion.curso])
-    res.sort(reverse=True)
-
-    # lista_coevs es la lista del nombre de todas las coevaluaciones sin repeticiones
-    lista_coevs = []
-    for i in range(len(res)):
-        if res[i][1] not in lista_coevs:
-            lista_coevs.append(res[i][1])
-
-    # par_coevs_nota es una lista de cada coevaluacion sin repeticiones con las notas promediadas
-    par_coevs_nota = []
-    for nombre_coev in lista_coevs:
-        i=0
-        nota = 0
-        for r in res:
-            if r[1] == nombre_coev:
-                nota += r[2]
-                i += 1
-        i = max(1, i)
-        nota = nota/i
-        par_coevs_nota.append([nombre_coev, nota])
-
-    # trip_notas es una lista de cada coevaluacion sin repeticiones con las notas promediadas y la fecha de inicio de cada coevaluacion
-    trip_notas = []
-    for i in range(len(par_coevs_nota)):
-        trip_notas.append([par_coevs_nota[i][0], par_coevs_nota[i][1], 0])
-    for a in trip_notas:
-        for b in res:
-            if b[1] == a[0]:
-                a[2] = b[0]
+    notas = []
+    for c in CoevEstud.objects.filter(user=user):
+        temp = (c.r1 + c.r2 + c.r3 + c.r4 + c.r5 + c.r6 + c.r7 + c.r8)/8
+        notas.append([c.coevaluacion.inicio, c.coevaluacion.nombre, round(temp, 1)])
+    notas.sort(reverse=True)
 
     # Return
-    return render(request, "coevaluaciones/perfil-vista-dueno.html", {'user': user, 'aux': aux, 'notas': trip_notas})
+    return render(request, "coevaluaciones/perfil-vista-dueno.html", {'user': user, 'cursos': cursos, 'notas': notas})
 
 @login_required(login_url='/login')
 def cambiarContra(request):
@@ -118,33 +82,41 @@ def cambiarContra(request):
             login(request, userName)
     return HttpResponseRedirect('/perfil')
 
+
+MENSAJE = {"error":" Ha ocurrido un error. \n No se ha agregado la Coevaluación \n Revisa que las ponderaciones sumen 1.",
+         "exito":"Se ha agregado correctamente la Coevaluación.",
+         " ":""}
+
 @login_required(login_url='/login')
-def ficha_curso(request, curso_id):
+def ficha_curso(request, curso_id,mensaje=" "):
+    """ Muestra las coevaluaciones para el curso."""
     user = request.user
     curso = Curso.objects.get(id=curso_id)
-    roli = Roles.objects.get(user=user, curso=curso)
-    if roli.rol == "Alumno":
-        coevs = Coevaluacion.objects.filter(curso=curso).order_by('-fin')
-        for c in coevs:
-            actualizar_coevaluacion(c)
+    rol_user = Roles.objects.get(user=user, curso=curso)
+    coevs = Coevaluacion.objects.filter(curso=curso).order_by('-fin')
+    for c in coevs:
+        actualizar_coevaluacion(c)
+    if rol_user.rol == "Alumno":
         queryset = CoevEstud.objects.none()
         for i in range(len(coevs)):
             queryset |= CoevEstud.objects.filter(user=user, coevaluacion__exact=coevs[i])
         return render(request, "coevaluaciones/curso-vista-alumno.html",
-                      {'user': user, 'curso': curso, 'coevs': coevs, 'usercoev': queryset})
+                      {'user': user, 'curso': curso, 'usercoev': queryset})
+    elif rol_user.rol == "Profesor" or rol_user.rol == "Auxiliar" or rol_user.rol == "Ayudante":
+        return render(request, "coevaluaciones/curso-vista-docente.html",{'user': user,'rol':rol_user.rol,'mensaje':MENSAJE[mensaje],
+                                                                          'curso': curso,'coevaluaciones':coevs})
     else:
-        # user_coev = CoevEstud.objects.filter(user=user)
-        # if es un estudiante
-        return render(request, "coevaluaciones/curso-vista-docente.html")
+        return redirect('')
 
 
 @login_required(login_url='/login')
 def ficha_coevaluacion(request, coev_id):
+    """ Muestra una coevaluacion y permite contestarla para un alumno. """
     user = request.user
     coevaluacion = Coevaluacion.objects.get(id=coev_id)
     actualizar_coevaluacion(coevaluacion)
-    roli = Roles.objects.get(user=user, curso=coevaluacion.curso)
-    if roli.rol == "Alumno":
+    rol_user = Roles.objects.get(user=user, curso=coevaluacion.curso)
+    if rol_user.rol == "Alumno":
         # Compañeros
         user_coev = CoevEstud.objects.get(user=user, coevaluacion=coevaluacion)
         companheros = CoevEstud.objects.filter(coevaluacion=coevaluacion, equipo=user_coev.equipo).exclude(user=user)
@@ -172,14 +144,15 @@ def ficha_coevaluacion(request, coev_id):
         context = {'user': user, 'coevaluacion': coevaluacion, 'curso': coevaluacion.curso, 'user_coev': user_coev,
                    'eval_form': form, 'contestadas': contestadas}
         return render(request, "coevaluaciones/coevaluacion-vista-alumno.html", context)
-    else:
+    elif rol_user.rol == "Profesor" or rol_user.rol == "Auxiliar" or rol_user.rol == "Ayudante":
         return render(request, "coevaluaciones/coevaluacion-vista-docente.html")
+    else:
+        return redirect('')
 
 
 @login_required(login_url='/login')
 def subir_coevaluacion(request, coev_id):
-    # user = request.user
-    # coev = Coevaluacion.objects.get(id=coev_id)
+    """ Sube los resultados de una coevaluacion. """
     if request.method == 'POST':
         form = AddResultadoForm(request.POST)
         if form.is_valid():
@@ -187,12 +160,56 @@ def subir_coevaluacion(request, coev_id):
     return redirect('ficha_coevaluacion', coev_id=coev_id)
 
 
+@login_required(login_url='/login')
+def agregar_coevaluacion(request, curso_id):
+    """ Agrega una coevaluacion a un curso. """
+    if request.method == 'POST':
+        nombre = request.POST['nombre_coev']
+        inicio = str(request.POST['fecha_inicio'] + ' '+ request.POST['hora_inicio'])
+        fin = str(request.POST['fecha_fin'] + ' '+ request.POST['hora_fin'])
+        curso = Curso.objects.get(id=request.POST['curso_id'])
+        p_p1 = request.POST['p_p1']
+        p_p2 = request.POST['p_p2']
+        p_p3 = request.POST['p_p3']
+        p_p4 = request.POST['p_p4']
+        p_p5 = request.POST['p_p5']
+        p_p6 = request.POST['p_p6']
+        p_p7 = request.POST['p_p7']
+        p_p8 = request.POST['p_p8']
+        sum = float(p_p1) + float(p_p2) + float(p_p3) + float(p_p4) + float(p_p5) +float(p_p6)+float(p_p7)+float(p_p8)
+        if sum != 1.0:
+            return redirect('ficha_curso',curso_id,"error")
+        nueva_coevaluacion = Coevaluacion(nombre=nombre,
+                                          curso=curso,
+                                          inicio=inicio,
+                                          fin=fin,
+                                          preguntas= Preguntas.objects.all().first(),
+                                          p1=float(p_p1),
+                                          p2=float(p_p2),
+                                          p3=float(p_p3),
+                                          p4=float(p_p4),
+                                          p5=float(p_p5),
+                                          p6=float(p_p6),
+                                          p7=float(p_p7),
+                                          p8=float(p_p8))
+        nueva_coevaluacion.save()
+        #agregar los coevestud para todos los estudiantes con sus grupos correspondientes
+        equipos = Equipo.objects.filter(curso=curso)
+        personas = PersonaEquipo.objects.filter(equipo__in=equipos,estado=True)
+        for p in personas:
+            n_coevestud = CoevEstud(user=p.user,coevaluacion=nueva_coevaluacion,equipo=p.equipo,estado="Pendiente",
+                                    r1=None, r2=None,r3=None,r4=None,r5=None,r6=None,r7=None,r8=None)
+            n_coevestud.save()
+    return redirect('ficha_curso',curso_id,"exito")
+
+
 def actualizar_coevaluacion(coevaluacion):
+    """ Actualiza el estado de una coevaluacion. """
     fecha_termino = coevaluacion.fin
     fecha_actual = timezone.now()
     if fecha_termino < fecha_actual:
         coevaluacion.estado = "Cerrada"
         coevaluacion.save()
-    else:  # Para prueba de funcion
+    else:
         coevaluacion.estado = "Abierta"
         coevaluacion.save()

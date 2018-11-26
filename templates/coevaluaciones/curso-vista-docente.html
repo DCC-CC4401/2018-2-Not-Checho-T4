@@ -19,19 +19,42 @@
 <!-- Cuerpo -->
 <div class="container"> <!-- Contenedor responsivo de Bootstrap, se adapta a la pantalla usando columnas. -->
 
-    <h3 class="d-inline-block page-title">Ficha de Curso</h3>
-    <h5 class="mb-3">
-        <div class="cargos cargos-profesor"></div>
-        CC4401-1 Ingeniería de Software 2018, Primavera
-    </h5>
-    <hr/>
-    <!-- Tablas de resumen -->
-    <div class="row">
-        <!-- Tabla de coevaluaciones -->
-        <div class="col-md-10 offset-1 mb-5">
-            <h4 class="d-inline-block mt-1">Coevaluaciones del curso</h4>
-            <button type="button" id="add-coev-btn" class="btn btn-primary-custom float-right">Agregar coevaluación
-            </button>
+            <h3 class="d-inline-block page-title">Ficha de Curso</h3>
+            <h5 class="mb-3">
+                {% if rol.upper == "PROFESOR" %}
+                <div class="cargos cargos-profesor"></div>
+                {% endif %}
+                {% if rol.upper == "AUXILIAR" %}
+                <div class="cargos cargos-auxiliar"></div>
+                {% endif %}
+                {% if rol.upper == "AYUDANTE" %}
+                <div class="cargos cargos-ayudante"></div>
+                {% endif %}
+                       {{ curso.codigo }}-{{ curso.seccion }} {{ curso.nombre }} {{ curso.anho }}-{{ curso.semestre }}
+            </h5>
+            <hr/>
+            <input type="hidden" id="mensaje" name="alert" value="{{ mensaje }}">
+            <script>
+                var m = document.getElementById("mensaje").value;
+                if(m!=""){
+                    $(document).ready(function () {
+                    alert(m);
+                    window.location.href = '/ficha_curso/{{ curso.id }}';
+                })
+                }
+
+            </script>
+
+
+
+            <!-- Tablas de resumen -->
+            <div class="row">
+                <!-- Tabla de coevaluaciones -->
+                <div class="col-md-10 offset-1 mb-5">
+            		<h4 class="d-inline-block mt-1">Coevaluaciones del curso</h4>
+                    <button type="button" id="add-coev-btn" class="btn btn-primary-custom float-right" data-href="#collapseAddCoev" data-toggle="collapse"
+                            href="#collapseAddCoev" role="pill"
+                            aria-expanded="false" aria-controls="collapseAddCoev">Agregar coevaluación</button>
 
             <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
                 <table class="table table-coeval-curso table-striped table-hover mb-0"> <!-- Tabla -->
@@ -46,72 +69,103 @@
                     </tr>
                     </thead>
 
-                    <!-- Cuerpo de tabla (Table Data) -->
-                    <tbody>
-                    <tr>
-                        <!-- Fecha de inicio -->
-                        <td class="td-fecha">
-                            20:01 01/12/18
-                        </td>
-                        <!-- Título de coevaluación -->
-                        <td>Tarea final</td>
-                        <!-- Fecha de término -->
-                        <td class="td-fecha">
-                            23:59 20/12/18
-                        </td>
-                        <!-- Estado -->
-                        <td>Abierta</td>
-                        <!-- Ícono de acción (responder) -->
-                        <td class="td-icon"></td>
-                    </tr>
-                    <tr>
-                        <td class="td-fecha">
-                            12:03 11/11/18
-                        </td>
-                        <td>Tarea con nombre muy largo que ocupa todo el espacio</td>
-                        <td class="td-fecha">
-                            23:59 21/11/18
-                        </td>
-                        <td>Abierta</td>
-                        <td class="td-icon"></td>
-                    </tr>
-                    <tr>
-                        <td class="td-fecha">15:15 10/11/18</td>
-                        <td>Tarea 2</td>
-                        <td class="td-fecha">23:59 19/11/18</td>
-                        <td>Cerrada</td>
-                        <td class="td-icon">
-                            <a href="#" title="Publicar resultados"><img class="clickable-icon publish-icon wiggle"
-                                                                         src="icon/publish-icon.png"
-                                                                         alt="Publicar resultados" width="28"
-                                                                         height="28"></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="td-fecha">03:53 20/10/18</td>
-                        <td>Tarea 1</td>
-                        <td class="td-fecha">23:59 27/10/18</td>
-                        <td>Publicada</td>
-                        <td class="td-icon">
-                            <a href="#" title="Exportar resultados"><img class="clickable-icon export-icon"
-                                                                         src="icon/export-icon.png"
-                                                                         alt="Exportar resultados" width="28"
-                                                                         height="28"></a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                            <!-- Cuerpo de tabla (Table Data) -->
+                            <tbody>
+                                {% for c in coevaluaciones %}
+                                <tr class="clickable-row" data-href="{% url 'ficha_coevaluacion' c.id %}">
+                                    <!-- Fecha de inicio -->
+                                    <td class="td-fecha">
+                                        {{ c.inicio|date:'H:i d/m/y' }}
+                                    </td>
+                                    <!-- Título de coevaluación -->
+                                    <td>{{ c.nombre }}</td>
+                                    <!-- Fecha de término -->
+                                    <td class="td-fecha">
+                                        {{ c.fin|date:'H:i d/m/y' }}
+                                    </td>
+                                    <!-- Estado -->
+                                    <td>{{ c.estado }}</td>
+                                    <!-- Ícono de acción (responder) -->
+                                    <td class="td-icon">
+                                        {% if c.estado == "Publicada" %}
+                                        <a href="#" title="Exportar resultados"><img class="clickable-icon export-icon" src="/static/icon/export-icon.png" alt="Exportar resultados" width="28" height="28"></a>
+                                        {% endif%}
+                                        {% if c.estado == "Cerrada" %}
+                                        <a href="#" title="Publicar resultados"><img class="clickable-icon publish-icon wiggle" src="/static/icon/publish-icon.png" alt="Publicar resultados" width="28" height="28"></a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            	<!-- FIN Tabla de coevaluaciones -->
+                <div class="collapse col-md-10 offset-1 mb-5" id="collapseAddCoev">
+                    <h4 class="d-inline-block mt-1">Agregar Coevaluación</h4>
+                    </br>
+                    <div class="col-md-12">
+                        <form action="{% url 'agregar_coevaluacion' curso.id %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <p class="h6">
+                                    <label for="nombre_coev">
+                                        Nombre de la Coevaluación:
+                                    </label>
+                                </p>
+                                <input type="text" required name="nombre_coev" maxlength="200" style="width: 75%">
+                            </div>
+                            <div class="form-group">
+                                <p class="h6">
+                                    <label for="fecha-inicio">
+                                        Fecha de inicio:
+                                    </label>
+                                </p>
+                                <input type="date" required name="fecha_inicio"> <input type="time" required
+                                                                                        name="hora_inicio">
+                            </div>
+                            <div class="form-group">
+                                <p class="h6">
+                                    <label for="fecha-fin">
+                                        Fecha de término:
+                                    </label>
+                                </p>
+                                <input type="date" required name="fecha_fin"> <input type="time" required
+                                                                                     name="hora_fin">
+                            </div>
+                            <div class="form-group">
+                                <p class="h6">
+                                    <label for="ponderaciones">
+                                        Ponderación de preguntas:
+                                    </label>
+                                </p>
+                                <input type="number" min="0" max="1" step="0.025" required name="p_p1" placeholder="P1" style="width:80px">
+                                <input type="number" min="0" max="1" step="0.025" required name="p_p2" placeholder="P2" style="width:80px">
+                                <input type="number" min="0" max="1" step="0.025" required name="p_p3" placeholder="P3" style="width:80px">
+                                <input type="number" min="0" max="1" step="0.025" required name="p_p4" placeholder="P4" style="width:80px">
+                                <input type="number" min="0" max="1" step="0.025" required name="p_p5" placeholder="P5" style="width:80px">
+                                <input type="number" min="0" max="1" step="0.025" required name="p_p6" placeholder="P6" style="width:80px">
+                                <input type="number" min="0" max="1" step="0.025" required name="p_p7" placeholder="P7" style="width:80px">
+                                <input type="number" min="0" max="1" step="0.025" required name="p_p8" placeholder="P8" style="width:80px">
+
+                            </div>
+                            <input type="hidden" name="curso_id" value="{{ curso.id }}">
+                            <button type="submit" class="btn btn-primary-custom">Agregar Coevaluación</button>
+                            <button type="reset" class="btn btn-danger" data-href="#collapseAddCoev" data-toggle="collapse"
+                            href="#collapseAddCoev" role="pill"
+                            aria-expanded="false" aria-controls="collapseAddCoev">Cancelar</button>
+                        </form>
+
+                    </div>
+                </div>
             </div>
-        </div>
-        <!-- FIN Tabla de coevaluaciones -->
-    </div>
-    <!-- FIN Tablas de resumen -->
+            <!-- FIN Tablas de resumen -->
 
     <!-- Gestión del curso -->
     <h4 class="d-inline-block mt-1 mb-0">Gestión del Curso</h4>
     <div class="d-inline-block ml-2">
         <a href="#" class="small" title="Cargar información desde archivo">
-            <img class="clickable-icon export-icon mb-1" src="icon/load-data-icon.png"
+            <img class="clickable-icon export-icon mb-1" src="/static/icon/load-data-icon.png"
                  alt="Cargar información desde archivo" width="20" height="20">
             Cargar archivo...
         </a>
@@ -141,7 +195,7 @@
                             <div class="d-flex justify-content-between">
                                 Dynamic Duo
                                 <a href="#" title="Eliminar grupo">
-                                    <img class="clickable-icon x-icon" src="icon/x-icon.png"
+                                    <img class="clickable-icon x-icon" src="/static/icon/x-icon.png"
                                          alt="Eliminar" width="28" height="28">
                                 </a>
                             </div>
@@ -184,7 +238,7 @@
                             <div class="d-flex justify-content-between">
                                 La Pandilla
                                 <a href="#" title="Eliminar grupo">
-                                    <img class="clickable-icon x-icon" src="icon/x-icon.png"
+                                    <img class="clickable-icon x-icon" src="/static/icon/x-icon.png"
                                          alt="Eliminar" width="28" height="28">
                                 </a>
                             </div>
@@ -237,7 +291,7 @@
                             <div class="d-flex justify-content-between">
                                 X-Men
                                 <a href="#" title="Eliminar grupo">
-                                    <img class="clickable-icon x-icon" src="icon/x-icon.png"
+                                    <img class="clickable-icon x-icon" src="/static/icon/x-icon.png"
                                          alt="Eliminar" width="28" height="28">
                                 </a>
                             </div>
@@ -276,7 +330,7 @@
                             <div class="d-flex justify-content-between">
                                 Avengers
                                 <a href="#" title="Eliminar grupo">
-                                    <img class="clickable-icon x-icon" src="icon/x-icon.png"
+                                    <img class="clickable-icon x-icon" src="/static/icon/x-icon.png"
                                          alt="Eliminar" width="28" height="28">
                                 </a>
                             </div>
