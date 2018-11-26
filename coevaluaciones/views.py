@@ -124,20 +124,21 @@ MENSAJE={"error":" Ha ocurrido un error. \n No se ha agregado la Coevaluación \
 
 @login_required(login_url='/login')
 def ficha_curso(request, curso_id,mensaje=" "):
+    """ Muestra las coevaluaciones para el curso."""
     user = request.user
     curso = Curso.objects.get(id=curso_id)
-    roli = Roles.objects.get(user=user, curso=curso)
+    rol_user = Roles.objects.get(user=user, curso=curso)
     coevs = Coevaluacion.objects.filter(curso=curso).order_by('-fin')
     for c in coevs:
         actualizar_coevaluacion(c)
-    if roli.rol == "Alumno":
+    if rol_user.rol == "Alumno":
         queryset = CoevEstud.objects.none()
         for i in range(len(coevs)):
             queryset |= CoevEstud.objects.filter(user=user, coevaluacion__exact=coevs[i])
         return render(request, "coevaluaciones/curso-vista-alumno.html",
                       {'user': user, 'curso': curso, 'usercoev': queryset})
-    elif roli.rol == "Profesor" or roli.rol == "Auxiliar" or roli.rol == "Ayudante":
-        return render(request, "coevaluaciones/curso-vista-docente.html",{'user': user,'rol':roli.rol,'mensaje':MENSAJE[mensaje],
+    elif rol_user.rol == "Profesor" or rol_user.rol == "Auxiliar" or rol_user.rol == "Ayudante":
+        return render(request, "coevaluaciones/curso-vista-docente.html",{'user': user,'rol':rol_user.rol,'mensaje':MENSAJE[mensaje],
                                                                           'curso': curso,'coevaluaciones':coevs})
     else:
         return redirect('')
@@ -145,11 +146,12 @@ def ficha_curso(request, curso_id,mensaje=" "):
 
 @login_required(login_url='/login')
 def ficha_coevaluacion(request, coev_id):
+    """ Muestra una coevaluacion y permite contestarla para un alumno. """
     user = request.user
     coevaluacion = Coevaluacion.objects.get(id=coev_id)
     actualizar_coevaluacion(coevaluacion)
-    roli = Roles.objects.get(user=user, curso=coevaluacion.curso)
-    if roli.rol == "Alumno":
+    rol_user = Roles.objects.get(user=user, curso=coevaluacion.curso)
+    if rol_user.rol == "Alumno":
         # Compañeros
         user_coev = CoevEstud.objects.get(user=user, coevaluacion=coevaluacion)
         companheros = CoevEstud.objects.filter(coevaluacion=coevaluacion, equipo=user_coev.equipo).exclude(user=user)
@@ -177,7 +179,7 @@ def ficha_coevaluacion(request, coev_id):
         context = {'user': user, 'coevaluacion': coevaluacion, 'curso': coevaluacion.curso, 'user_coev': user_coev,
                    'eval_form': form, 'contestadas': contestadas}
         return render(request, "coevaluaciones/coevaluacion-vista-alumno.html", context)
-    elif roli.rol == "Profesor" or roli.rol == "Auxiliar" or roli.rol == "Ayudante":
+    elif rol_user.rol == "Profesor" or rol_user.rol == "Auxiliar" or rol_user.rol == "Ayudante":
         return render(request, "coevaluaciones/coevaluacion-vista-docente.html")
     else:
         return redirect('')
@@ -185,6 +187,7 @@ def ficha_coevaluacion(request, coev_id):
 
 @login_required(login_url='/login')
 def subir_coevaluacion(request, coev_id):
+    """ Sube los resultados de una coevaluacion. """
     if request.method == 'POST':
         form = AddResultadoForm(request.POST)
         if form.is_valid():
@@ -194,6 +197,7 @@ def subir_coevaluacion(request, coev_id):
 
 @login_required(login_url='/login')
 def agregar_coevaluacion(request, curso_id):
+    """ Agrega una coevaluacion a un curso. """
     if request.method == 'POST':
         nombre = request.POST['nombre_coev']
         inicio = str(request.POST['fecha_inicio'] + ' '+ request.POST['hora_inicio'])
@@ -235,11 +239,12 @@ def agregar_coevaluacion(request, curso_id):
 
 
 def actualizar_coevaluacion(coevaluacion):
+    """ Actualiza el estado de una coevaluacion. """
     fecha_termino = coevaluacion.fin
     fecha_actual = timezone.now()
     if fecha_termino < fecha_actual:
         coevaluacion.estado = "Cerrada"
         coevaluacion.save()
-    else:  # Para prueba de funcion
+    else:
         coevaluacion.estado = "Abierta"
         coevaluacion.save()

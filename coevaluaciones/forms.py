@@ -14,6 +14,10 @@ PREGUNTAS = ["¿Demuestra compromiso con el proyecto?",
              "¿Ofrece apoyo en las tareas que van más allá del rol asignado?",
              "¿Es capaz de admitir sus equivocaciones y recibir críticas?",
              "Fortalezas","Debilidades","Comentario"]
+
+"""
+Formulario para que un alumno responda una coevaluacion.
+"""
 class AddResultadoForm(forms.Form):
     usuario_id = forms.IntegerField(widget=forms.HiddenInput())
     evaluado_id = forms.IntegerField(widget=forms.HiddenInput())
@@ -48,6 +52,7 @@ class AddResultadoForm(forms.Form):
 
         r = Resultado.objects.filter(coevaluacion=c, evaluador=u,evaluado=e).first()
         if r is None:
+            # crea un nuevo resultado
             resultado = Resultado(coevaluacion=c, evaluador=u, evaluado=e,
                                   a1=self.cleaned_data['a1'],
                                   a2=self.cleaned_data['a2'],
@@ -63,6 +68,7 @@ class AddResultadoForm(forms.Form):
 
             resultado.save()
         else:
+            # actualiza los resultados
             r.a1 = self.cleaned_data['a1']
             r.a2 = self.cleaned_data['a2']
             r.a3 = self.cleaned_data['a3']
