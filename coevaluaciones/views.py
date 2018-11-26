@@ -203,13 +203,22 @@ def agregar_coevaluacion(request, curso_id):
     return redirect('ficha_curso',curso_id,"exito")
 
 
+@login_required(login_url='/login')
+def publicar_coevaluacion(request, curso_id,coev_id):
+    coevaluacion = Coevaluacion.objects.get(id=coev_id)
+    coevaluacion.estado = 'Publicada'
+    coevaluacion.save()
+    print(coevaluacion.estado)
+    return redirect('ficha_curso', curso_id)
+
+
 def actualizar_coevaluacion(coevaluacion):
     """ Actualiza el estado de una coevaluacion. """
     fecha_termino = coevaluacion.fin
     fecha_actual = timezone.now()
-    if fecha_termino < fecha_actual:
+    if fecha_termino < fecha_actual and coevaluacion.estado == "Abierta":
         coevaluacion.estado = "Cerrada"
         coevaluacion.save()
-    else:
+    elif fecha_termino >= fecha_actual:
         coevaluacion.estado = "Abierta"
         coevaluacion.save()

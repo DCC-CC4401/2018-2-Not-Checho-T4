@@ -91,7 +91,7 @@
                                         <a href="#" title="Exportar resultados"><img class="clickable-icon export-icon" src="/static/icon/export-icon.png" alt="Exportar resultados" width="28" height="28"></a>
                                         {% endif%}
                                         {% if c.estado == "Cerrada" %}
-                                        <a href="#" title="Publicar resultados"><img class="clickable-icon publish-icon wiggle" src="/static/icon/publish-icon.png" alt="Publicar resultados" width="28" height="28"></a>
+                                        <a href="{% url 'publicar_coevaluacion' curso.id c.id %}" title="Publicar resultados"><img class="clickable-icon publish-icon wiggle" src="/static/icon/publish-icon.png" alt="Publicar resultados" width="28" height="28"></a>
                                         {% endif %}
                                     </td>
                                 </tr>

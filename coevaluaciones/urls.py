@@ -13,4 +13,5 @@ urlpatterns = [
     path('perfil', views.perfil, name="perfil"),
     path('cambiarContra', views.cambiarContra, name="cambiarContra"),
     path('agregar_coevaluacion/<curso_id>',views.agregar_coevaluacion,name='agregar_coevaluacion'),
+    path('publicar_coevaluacion/<curso_id>/<coev_id>',views.publicar_coevaluacion,name='publicar_coevaluacion'),
 ]
