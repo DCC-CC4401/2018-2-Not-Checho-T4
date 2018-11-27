@@ -61,8 +61,17 @@ def perfil(request):
     # Tus Notas
     notas = []
     for c in CoevEstud.objects.filter(user=user):
-        temp = (c.r1 + c.r2 + c.r3 + c.r4 + c.r5 + c.r6 + c.r7 + c.r8)/8
-        notas.append([c.coevaluacion.inicio, c.coevaluacion.nombre, round(temp, 1)])
+        if c.coevaluacion.estado == "Publicada":
+            temp = 0
+            temp += c.r1 * c.coevaluacion.p1
+            temp += c.r2 * c.coevaluacion.p2
+            temp += c.r3 * c.coevaluacion.p3
+            temp += c.r4 * c.coevaluacion.p4
+            temp += c.r5 * c.coevaluacion.p5
+            temp += c.r6 * c.coevaluacion.p6
+            temp += c.r7 * c.coevaluacion.p7
+            temp += c.r8 * c.coevaluacion.p8
+            notas.append([c.coevaluacion.inicio, c.coevaluacion.nombre, round(temp, 1)])
     notas.sort(reverse=True)
 
     # Return
