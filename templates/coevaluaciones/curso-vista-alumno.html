@@ -19,6 +19,13 @@
             });
         });
     </script>
+    <script>
+        $(document).ready(function ($) {
+            $(".clickable-row").click(function () {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
     <title>Sistema de Coevaluaciones DCC</title>
 </head>
 <body>
@@ -58,45 +65,41 @@
                     <tbody>
                     {% for c in usercoev %}
                         {% if c.estado == "Pendiente" %}
-                            <tr class="tr-pendiente"> <!-- Fila destacada como Pendiente -->
+                            <tr class="tr-pendiente clickable-row" data-href="{% url 'ficha_coevaluacion' c.coevaluacion.id %}"> <!-- Fila destacada como Pendiente -->
                                 {% else %}
-                            <tr>
+                            <tr class="clickable-row" data-href="{% url 'ficha_coevaluacion' c.coevaluacion.id %}">
                         {% endif %}
-                    <form action="{% url 'ficha_coevaluacion' c.coevaluacion.id %}" method="get">
-                        {% csrf_token %}
-                        <!-- Fecha de inicio -->
-                        <td class="td-fecha">
-                            {{ c.coevaluacion.inicio|date:'H:i d/m/y' }}
-                        </td>
-                        <!-- Título de coevaluación -->
-                        <td>
-                            {{ c.coevaluacion.nombre }}
-                        </td>
-                        <!-- Fecha de término -->
-                        <td class="td-fecha">
-                            {{ c.coevaluacion.fin|date:'H:i d/m/y' }}
-                        </td>
-                        <!-- Estado -->
-                        <td>
-                            {% if c.coevaluacion.estado == "Abierta" %}
-                                {{ c.estado }}
-                            {% else %}
-                                {{ c.coevaluacion.estado }}
-                            {% endif %}</td>
-                        <!-- Ícono de acción (responder) -->
+                    <!-- Fecha de inicio -->
+                    <td class="td-fecha">
+                        {{ c.coevaluacion.inicio|date:'H:i d/m/y' }}
+                    </td>
+                    <!-- Título de coevaluación -->
+                    <td>
+                        {{ c.coevaluacion.nombre }}
+                    </td>
+                    <!-- Fecha de término -->
+                    <td class="td-fecha">
+                        {{ c.coevaluacion.fin|date:'H:i d/m/y' }}
+                    </td>
+                    <!-- Estado -->
+                    <td>
+                        {% if c.coevaluacion.estado == "Abierta" %}
+                            {{ c.estado }}
+                        {% else %}
+                            {{ c.coevaluacion.estado }}
+                        {% endif %}</td>
+                    <!-- Ícono de acción (responder) -->
 
-                        <td class="td-icon">
-                            {% if c.estado == "Pendiente" %}
-                                <form action="{% url 'ficha_coevaluacion' c.coevaluacion.id %}" method="post">
-                                    {% csrf_token %}
-                                    <input type="image" class="clickable-icon answer-icon wiggle"
-                                           src="/static/icon/answer-icon.png" alt="Responder coevaluación" width="28"
-                                           height="28">
-                                </form>
-                            {% endif %}
-                        </td>
-                        </button>
-                    </form>
+                    <td class="td-icon">
+                        {% if c.estado == "Pendiente" %}
+                            <form action="{% url 'ficha_coevaluacion' c.coevaluacion.id %}" method="post">
+                                {% csrf_token %}
+                                <input type="image" class="clickable-icon answer-icon wiggle"
+                                       src="/static/icon/answer-icon.png" alt="Responder coevaluación" width="28"
+                                       height="28">
+                            </form>
+                        {% endif %}
+                    </td>
                     </tr>
 
                     {% endfor %}

@@ -81,7 +81,7 @@
                                 <td class="td-icon">
                                     <a href="{% url 'ficha_coevaluacion' coev.coevaluacion_id %}"
                                        title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle"
-                                                                           src="icon/answer-icon.png"
+                                                                           src="/static/icon/answer-icon.png"
                                                                            alt="Responder coevaluación" width="28"
                                                                            height="28"></a>
                                 </td>
@@ -142,8 +142,16 @@
                     {% for rol in roles_usuario %}
                         <tr class="clickable-row" data-href="{% url 'ficha_curso' curso_id=rol.curso_id %}">
                             <td class="td-curso-full">
-                                <div class="cargos cargos-alumno tooltip-custom">
-                                    <span class="tooltiptext"></span>
+                                {% if rol.rol == "Alumno" %}
+                                    <div class="cargos cargos-alumno tooltip-custom">
+                                {% endif %}
+                                {% if rol.rol == "Auxiliar" %}
+                                    <div class="cargos cargos-auxiliar tooltip-custom">
+                                {% endif %}
+                                {% if rol.rol == "Profesor" %}
+                                    <div class="cargos cargos-profesor tooltip-custom">
+                                {% endif %}
+                                <span class="tooltiptext"></span>
                                 </div>
                                 <span class="curso-nombre">{{ rol.curso.nombre }}</span>
                                 <br>
